@@ -55,18 +55,18 @@ public class SegmentFactory : MonoBehaviour {
 
         road.enabled = false;
 
-        CreateJunction(end, dir);
+        road.junction = CreateJunction(end, dir);
 
         return road;
     }
 
     public Junction CreateJunction(Vector3 pos, Quaternion rotation)
     {
-        /*Junction junction = Instantiate(junctionPrefab);
+        Junction junction = Instantiate(junctionPrefab);
         junction.transform.position = pos;
         junction.transform.localScale = new Vector3(CityConfig.JUNCTION_SIZE * 0.1f, 1f, CityConfig.JUNCTION_SIZE * 0.1f);
-        junction.transform.rotation = Quaternion.Euler(0, rotation.eulerAngles.y + 45f, 0);*/
-        return null;
+        junction.transform.rotation = Quaternion.Euler(0, rotation.eulerAngles.y, 0);
+        return junction;
     }
 }
 

@@ -9,6 +9,7 @@ public class Road : MonoBehaviour, IComparable<Road> {
     public Vector3 end { get; set; }
     public float length;
     public float t { get; set; }
+    public Junction junction { get; set; }
     public RoadType type { get; set;  }
 
 
@@ -17,6 +18,11 @@ public class Road : MonoBehaviour, IComparable<Road> {
         if (this.t < other.t) return -1;
         else if (this.t > other.t) return 1;
         else return 0;
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(junction.gameObject);
     }
 }
 
