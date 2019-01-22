@@ -20,4 +20,4 @@ public class Road : MonoBehaviour, IComparable<Road> {
     }
 }
 
-public enum RoadType { Road, Highway };
+public enum RoadType { Street, Highway };

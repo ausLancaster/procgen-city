@@ -79,6 +79,8 @@
     <Compile Include="Assets\Game.cs" />
     <Compile Include="Assets\GlobalGoals.cs" />
     <Compile Include="Assets\Heatmap.cs" />
+    <Compile Include="Assets\Junction.cs" />
+    <Compile Include="Assets\LocalConstraints.cs" />
     <Compile Include="Assets\PopMapVisualisation.cs" />
     <Compile Include="Assets\PriorityQueue.cs" />
     <Compile Include="Assets\Road.cs" />

@@ -14,7 +14,7 @@ public class GlobalGoals : MonoBehaviour {
     {
         var newRoads = new List<Road>();
 
-        Road continueStraight = segFactory.Create(
+        Road continueStraight = segFactory.CreateRoad(
             prevSegment.end,
             prevSegment.transform.localRotation,
             prevSegment.length,
@@ -28,8 +28,7 @@ public class GlobalGoals : MonoBehaviour {
             // generate a random deviation and compare to going straight, 
             // chosing the road that leads to the highest population
             float newAngle = prevSegment.transform.localRotation.eulerAngles.y + CityConfig.RandomStraightAngle();
-            print(newAngle);
-            Road randomStraight = segFactory.Create(
+            Road randomStraight = segFactory.CreateRoad(
                 prevSegment.end,
                 Quaternion.Euler(0, newAngle, 0),
                 prevSegment.length,
@@ -56,7 +55,7 @@ public class GlobalGoals : MonoBehaviour {
                 if (Random.value < CityConfig.HIGHWAY_BRANCH_PROBABILITY)
                 {
                     float leftAngle = prevSegment.transform.localRotation.eulerAngles.y - 90 + CityConfig.RnadomBranchAngle();
-                    Road leftRoad = segFactory.Create(
+                    Road leftRoad = segFactory.CreateRoad(
                         prevSegment.end,
                         Quaternion.Euler(0, leftAngle, 0),
                         prevSegment.length,
@@ -69,7 +68,7 @@ public class GlobalGoals : MonoBehaviour {
                 else if (Random.value < CityConfig.HIGHWAY_BRANCH_PROBABILITY)
                 {
                     float rightAngle = prevSegment.transform.localRotation.eulerAngles.y + 90 + CityConfig.RnadomBranchAngle();
-                    Road rightRoad = segFactory.Create(
+                    Road rightRoad = segFactory.CreateRoad(
                         prevSegment.end,
                         Quaternion.Euler(0, rightAngle, 0),
                         prevSegment.length,
