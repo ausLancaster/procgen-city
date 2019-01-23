@@ -17,7 +17,7 @@ public class SegmentFactory : MonoBehaviour {
     {
         Vector3 diff = end - start;
         float length = diff.magnitude;
-        Quaternion dir = Quaternion.FromToRotation(Vector3.right, diff);
+        Quaternion dir = Quaternion.FromToRotation(Vector3.right, diff) * Quaternion.Euler(90f, 0, 0);
 
         return CreateRoad(start, end, dir, length, t, type);
     }
@@ -47,7 +47,7 @@ public class SegmentFactory : MonoBehaviour {
         if (type == RoadType.Highway) width = CityConfig.HIGHWAY_SEGMENT_WIDTH;
         else if (type == RoadType.Street) width = CityConfig.STREET_SEGMENT_WIDTH;
         else throw new RoadTypeNotSupportedException("Factory does not support this road type");
-        road.transform.localScale = new Vector3(length * 0.1f, 1f, width * 0.1f);
+        road.transform.localScale = new Vector3(length, width, 1f);
 
         road.transform.localRotation = dir;
 

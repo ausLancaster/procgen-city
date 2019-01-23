@@ -5,7 +5,7 @@ public class GlobalGoals : MonoBehaviour {
 
     SegmentFactory segFactory;
 
-    private void Start()
+    private void Initialize()
     {
         segFactory = GetComponent<SegmentFactory>();
     }
@@ -14,6 +14,7 @@ public class GlobalGoals : MonoBehaviour {
     {
         var newRoads = new List<Road>();
 
+        if (segFactory == null) Initialize();
         Road continueStraight = segFactory.CreateRoad(
             prevSegment.end,
             prevSegment.transform.localRotation,
@@ -27,10 +28,11 @@ public class GlobalGoals : MonoBehaviour {
         {
             // generate a random deviation and compare to going straight, 
             // chosing the road that leads to the highest population
-            float newAngle = prevSegment.transform.localRotation.eulerAngles.y + CityConfig.RandomStraightAngle();
+            float newAngle = prevSegment.transform.localEulerAngles.y + CityConfig.RandomStraightAngle();
+
             Road randomStraight = segFactory.CreateRoad(
                 prevSegment.end,
-                Quaternion.Euler(0, newAngle, 0),
+                Quaternion.Euler(prevSegment.transform.localEulerAngles.x, newAngle, 0),
                 prevSegment.length,
                 0,
                 prevSegment.type
@@ -54,10 +56,10 @@ public class GlobalGoals : MonoBehaviour {
             {
                 if (Random.value < CityConfig.HIGHWAY_BRANCH_PROBABILITY)
                 {
-                    float leftAngle = prevSegment.transform.localRotation.eulerAngles.y - 90 + CityConfig.RnadomBranchAngle();
+                    float leftAngle = prevSegment.transform.localEulerAngles.y - 90 + CityConfig.RnadomBranchAngle();
                     Road leftRoad = segFactory.CreateRoad(
                         prevSegment.end,
-                        Quaternion.Euler(0, leftAngle, 0),
+                        Quaternion.Euler(prevSegment.transform.localEulerAngles.x, leftAngle, 0),
                         prevSegment.length,
                         0,
                         prevSegment.type
@@ -65,12 +67,12 @@ public class GlobalGoals : MonoBehaviour {
 
                     newRoads.Add(leftRoad);
                 }
-                else if (Random.value < CityConfig.HIGHWAY_BRANCH_PROBABILITY)
+                if (Random.value < CityConfig.HIGHWAY_BRANCH_PROBABILITY)
                 {
-                    float rightAngle = prevSegment.transform.localRotation.eulerAngles.y + 90 + CityConfig.RnadomBranchAngle();
+                    float rightAngle = prevSegment.transform.localEulerAngles.y + 90 + CityConfig.RnadomBranchAngle();
                     Road rightRoad = segFactory.CreateRoad(
                         prevSegment.end,
-                        Quaternion.Euler(0, rightAngle, 0),
+                        Quaternion.Euler(prevSegment.transform.localEulerAngles.x, rightAngle, 0),
                         prevSegment.length,
                         0,
                         prevSegment.type

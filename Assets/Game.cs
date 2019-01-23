@@ -6,6 +6,7 @@ public class Game : MonoBehaviour {
     SegmentFactory segFactory;
     GlobalGoals globalGoals;
     LocalConstraints localConstraints;
+    RoadMap map;
     public static int seed;
 
     private void Start()
@@ -13,8 +14,10 @@ public class Game : MonoBehaviour {
         segFactory = GetComponent<SegmentFactory>();
         globalGoals = GetComponent<GlobalGoals>();
         localConstraints = GetComponent<LocalConstraints>();
+        map = GetComponent<RoadMap>();
 
-        seed = 0;// Random.Range(0, 65536);
+        //seed = 0;
+        seed = Random.Range(0, 65536);
         Generate(seed);
     }
 
@@ -40,24 +43,29 @@ public class Game : MonoBehaviour {
 
         int roadCount = 0;
 
-        while (priorityQ.Count() > 0 && roadCount <= CityConfig.MAX_ROADS)
+        while (priorityQ.Count() > 0 && roadCount < CityConfig.MAX_ROADS)
         {
 
-            Road minRoad = priorityQ.Dequeue();
+            Road nextRoad = priorityQ.Dequeue();
 
             // check local constraints
-
-            // set up branch links
-            // activate road
-            minRoad.enabled = true;
-            roadCount++;
-
-            List<Road> goals = globalGoals.Generate(minRoad);
-            foreach (Road r in goals)
+            bool accepted = localConstraints.Check(nextRoad, map);
+            if (accepted)
             {
-                r.t = minRoad.t + 1;
-                priorityQ.Enqueue(r);
+                // set up branch links
+                // activate road
+                map.AddRoad(nextRoad);
+                roadCount++;
+
+                // generate new possible branches according to global goals
+                List<Road> goals = globalGoals.Generate(nextRoad);
+                foreach (Road r in goals)
+                {
+                    r.t = nextRoad.t + 1;
+                    priorityQ.Enqueue(r);
+                }
             }
+
         }
     }
 }
