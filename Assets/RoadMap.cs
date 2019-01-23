@@ -25,6 +25,7 @@ public class RoadMap : MonoBehaviour {
         if (quadTree == null) Initialize();
         road.enabled = true;
         quadTree.Insert(road);
+        
     }
 
 }

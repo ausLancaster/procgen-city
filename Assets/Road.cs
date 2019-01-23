@@ -57,15 +57,15 @@ public class Road : MonoBehaviour, IComparable<Road>, IQuadObject
             minX = end.x;
             maxX = start.x;
         }
-        if (start.y < end.y)
+        if (start.z < end.z)
         {
-            minY = start.y;
-            maxY = end.y;
+            minY = start.z;
+            maxY = end.z;
         }
         else
         {
-            minY = end.y;
-            maxY = start.y;
+            minY = end.z;
+            maxY = start.z;
         }
         bounds = new Rect(
             minX,
@@ -73,6 +73,7 @@ public class Road : MonoBehaviour, IComparable<Road>, IQuadObject
             maxX - minX + 0.01f,
             maxY - minY + 0.01f
             );
+        //print(start.ToString() + '\n' + end.ToString() + '\n' + bounds.ToString());
         return bounds;
     }
 }

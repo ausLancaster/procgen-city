@@ -16,8 +16,8 @@ public class Game : MonoBehaviour {
         localConstraints = GetComponent<LocalConstraints>();
         map = GetComponent<RoadMap>();
 
-        //seed = 0;
-        seed = Random.Range(0, 65536);
+        seed = 0;
+        //seed = Random.Range(0, 65536);
         Generate(seed);
     }
 
@@ -39,7 +39,7 @@ public class Game : MonoBehaviour {
             RoadType.Highway);
         priorityQ.Enqueue(root1);
         priorityQ.Enqueue(root2);
-        segFactory.CreateJunction(Vector3.zero, Quaternion.identity);
+        //segFactory.CreateJunction(Vector3.zero, Quaternion.identity);
 
         int roadCount = 0;
 

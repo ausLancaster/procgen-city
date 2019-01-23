@@ -55,7 +55,14 @@ public class SegmentFactory : MonoBehaviour {
 
         road.enabled = false;
 
-        road.junction = CreateJunction(end, dir);
+        //road.junction = CreateJunction(end, dir);
+
+        road.UpdateBounds();
+        Rect bounds = road.Bounds;
+
+        road.junction = Instantiate(junctionPrefab);
+        road.junction.transform.localPosition = new Vector3(bounds.center.x, 0, bounds.center.y);
+        road.junction.transform.localScale = new Vector3(0.1f * bounds.width, 1f, 0.1f * bounds.height);
 
         return road;
     }

@@ -24,8 +24,8 @@ public class LocalConstraints : MonoBehaviour {
             anglediff = Mathf.Abs(anglediff);
             if (found && anglediff > CityConfig.MIN_INTERSECTION_ANGLE)
             {
-                Junction j = segFactory.CreateJunction(p, Quaternion.identity);
-                j.gameObject.GetComponent<MeshRenderer>().material.color = Color.magenta;
+                /*Junction j = segFactory.CreateJunction(p, Quaternion.identity);
+                j.gameObject.GetComponent<MeshRenderer>().material.color = Color.magenta;*/
             }
         }
 
