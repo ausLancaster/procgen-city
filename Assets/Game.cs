@@ -37,35 +37,41 @@ public class Game : MonoBehaviour {
             new Vector3(-CityConfig.HIGHWAY_SEGMENT_LENGTH, 0, 0),
             0,
             RoadType.Highway);
+        root1.prev.Add(root2);
+        root2.prev.Add(root1);
         priorityQ.Enqueue(root1);
         priorityQ.Enqueue(root2);
         //segFactory.CreateJunction(Vector3.zero, Quaternion.identity);
 
         int roadCount = 0;
 
-        while (priorityQ.Count() > 0 && roadCount < CityConfig.MAX_ROADS)
+        while (priorityQ.Count() > 0)
         {
-
             Road nextRoad = priorityQ.Dequeue();
-
-            // check local constraints
-            bool accepted = localConstraints.Check(nextRoad, map);
-            if (accepted)
+            if (roadCount < CityConfig.MAX_ROADS)
             {
-                // set up branch links
-                // activate road
-                map.AddRoad(nextRoad);
-                roadCount++;
-
-                // generate new possible branches according to global goals
-                List<Road> goals = globalGoals.Generate(nextRoad);
-                foreach (Road r in goals)
+                // check local constraints
+                bool accepted = localConstraints.Check(nextRoad, map);
+                if (accepted)
                 {
-                    r.t = nextRoad.t + 1;
-                    priorityQ.Enqueue(r);
-                }
-            }
+                    // set up branch links
+                    // activate road
+                    map.AddRoad(nextRoad);
+                    roadCount++;
 
+                    // generate new possible branches according to global goals
+                    List<Road> goals = globalGoals.Generate(nextRoad);
+                    foreach (Road r in goals)
+                    {
+                        r.t = nextRoad.t + 1;
+                        priorityQ.Enqueue(r);
+                    }
+                }
+            } else
+            {
+                // delete leftover roads after maximum has been exceeded
+                Destroy(nextRoad.gameObject);
+            }
         }
     }
 }

@@ -18,14 +18,18 @@ public class LocalConstraints : MonoBehaviour {
         List<Road> matches = qtree.QuadTree.Query(road.Bounds);
         foreach (Road other in matches)
         {
+
             bool found;
             Vector3 p = doRoadsIntersect(road, other, out found);
             float anglediff = Quaternion.Angle(road.transform.localRotation, other.transform.localRotation);
             anglediff = Mathf.Abs(anglediff);
             if (found && anglediff > CityConfig.MIN_INTERSECTION_ANGLE)
             {
-                /*Junction j = segFactory.CreateJunction(p, Quaternion.identity);
-                j.gameObject.GetComponent<MeshRenderer>().material.color = Color.magenta;*/
+                if (!road.prev.Contains(other) && !road.prev.Contains(other.prev[0]))
+                {
+                    Junction j = segFactory.CreateJunction(p, Quaternion.identity);
+                    j.gameObject.GetComponent<MeshRenderer>().material.color = Color.magenta;
+                }
             }
         }
 

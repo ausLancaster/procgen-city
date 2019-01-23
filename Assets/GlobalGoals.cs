@@ -52,6 +52,7 @@ public class GlobalGoals : MonoBehaviour {
                 DestroyImmediate(randomStraight.gameObject);
             }
 
+            // highway branches off highway
             if (roadPop > CityConfig.HIGHWAY_BRANCH_POPULATION_THRESHOLD)
             {
                 if (Random.value < CityConfig.HIGHWAY_BRANCH_PROBABILITY)
@@ -80,6 +81,8 @@ public class GlobalGoals : MonoBehaviour {
 
                     newRoads.Add(rightRoad);
                 }
+
+
             }
         }
         /*
@@ -93,6 +96,13 @@ public class GlobalGoals : MonoBehaviour {
         {
             DestroyImmediate(continueStraight);
         }*/
+
+        // set up links between roads
+        foreach (Road r in newRoads)
+        {
+            r.prev.Add(prevSegment);
+            prevSegment.next.Add(r);
+        }
 
         return newRoads;
     }

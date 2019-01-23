@@ -57,14 +57,14 @@ public class SegmentFactory : MonoBehaviour {
 
         //road.junction = CreateJunction(end, dir);
 
-        road.UpdateBounds();
+        /*road.UpdateBounds();
         Rect bounds = road.Bounds;
 
         road.junction = CreateJunction(
             new Vector3(bounds.center.x, 0, bounds.center.y),
             new Vector3(bounds.width, bounds.height, 1f),
             Quaternion.identity
-            );
+            );*/
 
         return road;
     }
@@ -72,7 +72,7 @@ public class SegmentFactory : MonoBehaviour {
     public Junction CreateJunction(Vector3 pos, Vector3 scale, Quaternion rotation)
     {
         Junction junction = Instantiate(junctionPrefab);
-        junction.transform.position = pos;
+        junction.transform.position = pos + new Vector3(0, 0.1f, 0);
         junction.transform.localScale = scale;
         junction.transform.rotation = rotation * Quaternion.Euler(90f, 0, 0);
         return junction;
@@ -80,7 +80,7 @@ public class SegmentFactory : MonoBehaviour {
 
     public Junction CreateJunction(Vector3 pos, Quaternion rotation)
     {
-        return CreateJunction(pos, new Vector3(CityConfig.JUNCTION_SIZE, 1f, CityConfig.JUNCTION_SIZE), rotation);
+        return CreateJunction(pos, new Vector3(CityConfig.JUNCTION_SIZE, CityConfig.JUNCTION_SIZE, 1f), rotation);
     }
 
 }

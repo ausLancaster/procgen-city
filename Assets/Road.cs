@@ -1,5 +1,6 @@
 ﻿using CSharpQuadTree;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Road : MonoBehaviour, IComparable<Road>, IQuadObject
@@ -13,6 +14,15 @@ public class Road : MonoBehaviour, IComparable<Road>, IQuadObject
     public Junction junction { get; set; }
     public RoadType type { get; set;  }
     Rect bounds;
+    public List<Road> prev { get; private set; }
+    public List<Road> next { get; private set; }
+    bool severed = false;
+
+    private void Awake()
+    {
+        prev = new List<Road>();
+        next = new List<Road>();
+    }
 
     public Rect Bounds
     {
@@ -70,10 +80,9 @@ public class Road : MonoBehaviour, IComparable<Road>, IQuadObject
         bounds = new Rect(
             minX,
             minY,
-            maxX - minX + 0.01f,
-            maxY - minY + 0.01f
+            Mathf.Max(maxX - minX, 0.001f),
+            Mathf.Max(maxX - minX, 0.001f)
             );
-        //print(start.ToString() + '\n' + end.ToString() + '\n' + bounds.ToString());
         return bounds;
     }
 }

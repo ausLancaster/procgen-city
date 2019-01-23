@@ -7,7 +7,7 @@ public static class CityConfig {
     public const float HEIGHT = 4000f;
     public const float X_START = -2000f;
     public const float Y_START = -2000f;
-    public const int MAX_ROADS = 200;
+    public const int MAX_ROADS = 400;
     public const float ROAD_SEGMENT_LENGTH = 30f;
     public const float HIGHWAY_SEGMENT_LENGTH = 40f;
     public const float STREET_SEGMENT_WIDTH = 9f;
