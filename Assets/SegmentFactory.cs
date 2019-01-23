@@ -60,21 +60,29 @@ public class SegmentFactory : MonoBehaviour {
         road.UpdateBounds();
         Rect bounds = road.Bounds;
 
-        road.junction = Instantiate(junctionPrefab);
-        road.junction.transform.localPosition = new Vector3(bounds.center.x, 0, bounds.center.y);
-        road.junction.transform.localScale = new Vector3(0.1f * bounds.width, 1f, 0.1f * bounds.height);
+        road.junction = CreateJunction(
+            new Vector3(bounds.center.x, 0, bounds.center.y),
+            new Vector3(bounds.width, bounds.height, 1f),
+            Quaternion.identity
+            );
 
         return road;
     }
 
-    public Junction CreateJunction(Vector3 pos, Quaternion rotation)
+    public Junction CreateJunction(Vector3 pos, Vector3 scale, Quaternion rotation)
     {
         Junction junction = Instantiate(junctionPrefab);
         junction.transform.position = pos;
-        junction.transform.localScale = new Vector3(CityConfig.JUNCTION_SIZE * 0.1f, 1f, CityConfig.JUNCTION_SIZE * 0.1f);
-        junction.transform.rotation = Quaternion.Euler(0, rotation.eulerAngles.y, 0);
+        junction.transform.localScale = scale;
+        junction.transform.rotation = rotation * Quaternion.Euler(90f, 0, 0);
         return junction;
     }
+
+    public Junction CreateJunction(Vector3 pos, Quaternion rotation)
+    {
+        return CreateJunction(pos, new Vector3(CityConfig.JUNCTION_SIZE, 1f, CityConfig.JUNCTION_SIZE), rotation);
+    }
+
 }
 
 public class RoadTypeNotSupportedException : System.Exception
