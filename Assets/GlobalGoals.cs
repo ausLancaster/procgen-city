@@ -14,6 +14,8 @@ public class GlobalGoals : MonoBehaviour {
     {
         var newRoads = new List<Road>();
 
+        if (prevSegment.severed) return newRoads;
+
         if (segFactory == null) Initialize();
         Road continueStraight = segFactory.CreateRoad(
             prevSegment.end,

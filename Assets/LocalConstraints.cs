@@ -14,21 +14,38 @@ public class LocalConstraints : MonoBehaviour {
     {
         if (segFactory == null) Initialize();
 
-        // check for intersecting roads
+        Rect searchBounds = new Rect(
+            road.Bounds.x - CityConfig.ROAD_SNAP_DISTANCE,
+            road.Bounds.y - CityConfig.ROAD_SNAP_DISTANCE,
+            road.Bounds.width + 2f * CityConfig.ROAD_SNAP_DISTANCE,
+            road.Bounds.height + 2f * CityConfig.ROAD_SNAP_DISTANCE
+            );
         List<Road> matches = qtree.QuadTree.Query(road.Bounds);
         foreach (Road other in matches)
         {
+            // check for intersecting roads
 
             bool found;
-            Vector3 p = doRoadsIntersect(road, other, out found);
+            Vector3 intersection = doRoadsIntersect(road, other, out found);
             float anglediff = Quaternion.Angle(road.transform.localRotation, other.transform.localRotation);
             anglediff = Mathf.Abs(anglediff);
-            if (found && anglediff > CityConfig.MIN_INTERSECTION_ANGLE)
+
+            if (!road.prev.Contains(other) && !road.prev.Contains(other.prev[0]))
             {
-                if (!road.prev.Contains(other) && !road.prev.Contains(other.prev[0]))
+                if (found && anglediff > CityConfig.MIN_INTERSECTION_ANGLE)
                 {
-                    Junction j = segFactory.CreateJunction(p, Quaternion.identity);
-                    j.gameObject.GetComponent<MeshRenderer>().material.color = Color.magenta;
+                    Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
+                    j.SetColor(Color.magenta);
+                    road.severed = true;
+                    road.CutEnd(intersection);
+
+                    // split road that is being intersected
+                    // set up links between roads
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
             }
         }
@@ -45,7 +62,14 @@ public class LocalConstraints : MonoBehaviour {
             new Vector2(b.end.x, b.end.z),
             out found
             );
-        return new Vector3(p.x, 0, p.y);
+        if (a.Bounds.Contains(p))
+        {
+            return new Vector3(p.x, 0, p.y);
+        } else
+        {
+            found = false;
+            return Vector3.zero;
+        }
     }
 
     public Vector2 GetIntersectionPointCoordinates(Vector2 A1, Vector2 A2, Vector2 B1, Vector2 B2, out bool found)

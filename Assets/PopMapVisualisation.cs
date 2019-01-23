@@ -23,7 +23,7 @@ public class PopMapVisualisation : MonoBehaviour {
             {
                 Transform heatSquare = Instantiate(prefab);
                 heatSquare.localScale = new Vector3(0.1f * step, 1f, 0.1f * step);
-                heatSquare.localPosition = new Vector3(i + step * 0.5f, 0, j + step * 0.5f);
+                heatSquare.localPosition = new Vector3(i + step * 0.5f, -0.1f, j + step * 0.5f);
 
                 float pop = Heatmap.Value(heatSquare.localPosition);
                 Color color = Color.Lerp(minColor, maxColor, pop);

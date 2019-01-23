@@ -12,16 +12,17 @@ public class Road : MonoBehaviour, IComparable<Road>, IQuadObject
     public event EventHandler BoundsChanged;
     public float t { get; set; }
     public Junction junction { get; set; }
-    public RoadType type { get; set;  }
+    public RoadType type { get; set; }
     Rect bounds;
     public List<Road> prev { get; private set; }
     public List<Road> next { get; private set; }
-    bool severed = false;
+    public bool severed { get; set; }
 
     private void Awake()
     {
         prev = new List<Road>();
         next = new List<Road>();
+        severed = false;
     }
 
     public Rect Bounds
@@ -44,14 +45,19 @@ public class Road : MonoBehaviour, IComparable<Road>, IQuadObject
         if (junction != null) Destroy(junction.gameObject);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void SetColor(Color col)
     {
-        print("collide");
+        GetComponent<MeshRenderer>().material.color = col;
     }
 
-    private void OnTriggerEnter(Collider collision)
+    public void CutEnd(Vector3 intersection)
     {
-        print("trigger");
+        end = intersection;
+        Vector3 diff = end - start;
+        length = diff.magnitude;
+        transform.localScale = new Vector3(length, transform.localScale.y, transform.localScale.z);
+        transform.localPosition = (start + end) / 2f;
+        if (length > 50) print(length);
     }
 
     public Rect UpdateBounds()
