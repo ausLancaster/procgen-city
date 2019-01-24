@@ -73,6 +73,7 @@ public class SegmentFactory : MonoBehaviour {
         junction.transform.position = pos + new Vector3(0, 0.1f, 0);
         junction.transform.localScale = scale;
         junction.transform.rotation = rotation * Quaternion.Euler(90f, 0, 0);
+        if (!CityConfig.SHOW_JUNCTIONS) junction.gameObject.SetActive(false);
         return junction;
     }
 

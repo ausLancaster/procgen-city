@@ -23,6 +23,7 @@ public static class CityConfig {
     public const float QUADTREE_MIN_SIZE = 32f;
     public const float MIN_INTERSECTION_ANGLE = 20f;
     public const float ROAD_SNAP_DISTANCE = 50f;
+    public const bool SHOW_JUNCTIONS = false;
 
 
 

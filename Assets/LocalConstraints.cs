@@ -54,10 +54,22 @@ public class LocalConstraints : MonoBehaviour {
                         }
 
                     }
+                    // check for potential crossings within snap distance
+
+                    Vector3 nearestPoint = NearestPointOnLine(otherRoad.start, otherRoad.end - otherRoad.start, road.end);
+                    if (Vector3.Distance(nearestPoint, road.end) < CityConfig.ROAD_SNAP_DISTANCE)
+                    {
+                        Junction j = segFactory.CreateJunction(nearestPoint, Quaternion.identity);
+                        j.SetColor(Color.yellow);
+                        roadMap.AddJunction(j);
+                        road.attachedSegments.Add(j);
+                        road.MoveEnd(nearestPoint);
+                        road.severed = true;
+                        return true;
+                    }
                 }
 
-                // check for potential crossings within snap distance
-
+          
             }
             else if (other.GetType() == typeof(Junction))
             {
@@ -72,6 +84,7 @@ public class LocalConstraints : MonoBehaviour {
                     otherJunction.SetColor(Color.blue);
                     road.MoveEnd(otherJunction.transform.localPosition);
                     road.severed = true;
+                    return true;
 
                     // set up links between roads
                 }
@@ -139,5 +152,13 @@ public class LocalConstraints : MonoBehaviour {
             B1.x + (B2.x - B1.x) * mu,
             B1.y + (B2.y - B1.y) * mu
         );
+    }
+
+    public static Vector3 NearestPointOnLine(Vector3 linePnt, Vector3 lineDir, Vector3 pnt)
+    {
+        lineDir.Normalize();
+        var v = pnt - linePnt;
+        var d = Vector3.Dot(v, lineDir);
+        return linePnt + lineDir * d;
     }
 }

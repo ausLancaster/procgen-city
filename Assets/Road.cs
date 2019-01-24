@@ -61,6 +61,8 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
         length = diff.magnitude;
         transform.localScale = new Vector3(length, transform.localScale.y, transform.localScale.z);
         transform.localPosition = (start + end) / 2f;
+        Quaternion dir = Quaternion.FromToRotation(Vector3.right, diff) * Quaternion.Euler(90f, 0, 0);
+        transform.localRotation = dir;
         if (length > 50) print(length);
     }
 
