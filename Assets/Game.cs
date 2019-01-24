@@ -60,7 +60,7 @@ public class Game : MonoBehaviour {
                     roadCount++;
 
                     // generate new possible branches according to global goals
-                    List<Road> goals = globalGoals.Generate(nextRoad);
+                    List<Road> goals = globalGoals.Generate(nextRoad, map);
                     foreach (Road r in goals)
                     {
                         r.t = nextRoad.t + 1;

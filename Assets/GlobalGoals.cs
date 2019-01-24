@@ -10,7 +10,7 @@ public class GlobalGoals : MonoBehaviour {
         segFactory = GetComponent<SegmentFactory>();
     }
 
-    public List<Road> Generate(Road prevSegment)
+    public List<Road> Generate(Road prevSegment, RoadMap roadMap)
     {
         var newRoads = new List<Road>();
 
@@ -42,21 +42,25 @@ public class GlobalGoals : MonoBehaviour {
 
             float randomPop = Heatmap.Value(randomStraight.end);
             float roadPop;
+            Road straight;
             if (randomPop > straightPop)
             {
                 newRoads.Add(randomStraight);
                 roadPop = randomPop;
+                straight = randomStraight;
                 DestroyImmediate(continueStraight.gameObject);
             } else
             {
                 newRoads.Add(continueStraight);
                 roadPop = straightPop;
+                straight = continueStraight;
                 DestroyImmediate(randomStraight.gameObject);
             }
 
             // highway branches off highway
             if (roadPop > CityConfig.HIGHWAY_BRANCH_POPULATION_THRESHOLD)
             {
+                Junction j = null;
                 if (Random.value < CityConfig.HIGHWAY_BRANCH_PROBABILITY)
                 {
                     float leftAngle = prevSegment.transform.localEulerAngles.y - 90 + CityConfig.RnadomBranchAngle();
@@ -67,7 +71,10 @@ public class GlobalGoals : MonoBehaviour {
                         0,
                         prevSegment.type
                         );
-
+                    j = segFactory.CreateJunction(prevSegment.end, Quaternion.identity);
+                    leftRoad.attachedSegments.Add(j);
+                    straight.attachedSegments.Add(j);
+                    roadMap.AddJunction(j);
                     newRoads.Add(leftRoad);
                 }
                 if (Random.value < CityConfig.HIGHWAY_BRANCH_PROBABILITY)
@@ -80,7 +87,13 @@ public class GlobalGoals : MonoBehaviour {
                         0,
                         prevSegment.type
                         );
-
+                    if (j == null)
+                    {
+                        j = segFactory.CreateJunction(prevSegment.end, Quaternion.identity);
+                        roadMap.AddJunction(j);
+                    }
+                    rightRoad.attachedSegments.Add(j);
+                    straight.attachedSegments.Add(j);
                     newRoads.Add(rightRoad);
                 }
 

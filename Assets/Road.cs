@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Road : MonoBehaviour, IComparable<Road>, IQuadObject
+public class Road : MonoBehaviour, IComparable<Road>, Segment
 {
 
     public Vector3 start { get; set; }
@@ -11,7 +11,7 @@ public class Road : MonoBehaviour, IComparable<Road>, IQuadObject
     public float length;
     public event EventHandler BoundsChanged;
     public float t { get; set; }
-    public Junction junction { get; set; }
+    public List<Junction> attachedSegments { get; set; }
     public RoadType type { get; set; }
     Rect bounds;
     public List<Road> prev { get; private set; }
@@ -22,6 +22,7 @@ public class Road : MonoBehaviour, IComparable<Road>, IQuadObject
     {
         prev = new List<Road>();
         next = new List<Road>();
+        attachedSegments = new List<Junction>();
         severed = false;
     }
 
@@ -42,7 +43,10 @@ public class Road : MonoBehaviour, IComparable<Road>, IQuadObject
 
     private void OnDestroy()
     {
-        if (junction != null) Destroy(junction.gameObject);
+        foreach (Junction s in attachedSegments)
+        {
+            if (s != null) Destroy(s.gameObject);
+        }
     }
 
     public void SetColor(Color col)
@@ -50,7 +54,7 @@ public class Road : MonoBehaviour, IComparable<Road>, IQuadObject
         GetComponent<MeshRenderer>().material.color = col;
     }
 
-    public void CutEnd(Vector3 intersection)
+    public void MoveEnd(Vector3 intersection)
     {
         end = intersection;
         Vector3 diff = end - start;

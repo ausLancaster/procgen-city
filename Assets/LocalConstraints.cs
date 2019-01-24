@@ -10,48 +10,75 @@ public class LocalConstraints : MonoBehaviour {
         segFactory = GetComponent<SegmentFactory>();
     }
 
-    public bool Check(Road road, RoadMap qtree)
+    public bool Check(Road road, RoadMap roadMap)
     {
         if (segFactory == null) Initialize();
 
         Rect searchBounds = GetSearchBounds(road);
-        List<Road> matches = qtree.QuadTree.Query(road.Bounds);
-        foreach (Road other in matches)
+        List<Segment> matches = roadMap.QuadTree.Query(road.Bounds);
+        foreach (Segment other in matches)
         {
-            // check for intersecting roads
-
-            bool found;
-            Vector3 intersection = DoRoadsIntersect(road, other, out found);
-            float anglediff = Quaternion.Angle(road.transform.localRotation, other.transform.localRotation);
-            anglediff = Mathf.Abs(anglediff);
-
-            if (!road.prev.Contains(other) && !road.prev.Contains(other.prev[0]))
+            if (other.GetType() == typeof(Road))
             {
-                if (found)
+                Road otherRoad = (Road) other;
+
+                // check for intersecting roads
+
+                bool found;
+                Vector3 intersection = DoRoadsIntersect(road, otherRoad, out found);
+                float anglediff = Quaternion.Angle(road.transform.localRotation, otherRoad.transform.localRotation);
+                anglediff = Mathf.Abs(anglediff);
+
+                if (!road.prev.Contains(otherRoad) && !road.prev.Contains(otherRoad.prev[0]))
                 {
-                    if (anglediff > CityConfig.MIN_INTERSECTION_ANGLE)
+                    if (found)
                     {
-                        Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
-                        j.SetColor(Color.magenta);
-                        road.severed = true;
-                        road.CutEnd(intersection);
+                        if (anglediff > CityConfig.MIN_INTERSECTION_ANGLE)
+                        {
+                            Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
+                            j.SetColor(Color.magenta);
+                            roadMap.AddJunction(j);
+                            road.attachedSegments.Add(j);
+                            road.severed = true;
+                            road.MoveEnd(intersection);
 
-                        // split road that is being intersected
-                        // set up links between roads
-                        return true;
-                    } else
-                    {
-                        Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
-                        j.SetColor(Color.red);
-                        return false;
+                            // split road that is being intersected
+                            // set up links between roads
+                            return true;
+                        }
+                        else
+                        {
+                            Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
+                            j.SetColor(Color.red);
+                            return false;
+                        }
+
                     }
+                }
 
+                // check for potential crossings within snap distance
+
+            }
+            else if (other.GetType() == typeof(Junction))
+            {
+                Junction otherJunction = (Junction) other;
+
+                // check for existing crossings within snap distance
+
+                if (!road.attachedSegments.Contains(otherJunction) &&
+                    Vector3.Distance(otherJunction.transform.localPosition, road.end) < CityConfig.ROAD_SNAP_DISTANCE
+                    )
+                {
+                    otherJunction.SetColor(Color.blue);
+                    road.MoveEnd(otherJunction.transform.localPosition);
+                    road.severed = true;
+
+                    // set up links between roads
                 }
             }
 
-            // check for existing crossings within snap distance
 
-            // check for potential crossings within snap distance
+
         }
 
         return true;

@@ -53,8 +53,6 @@ public class SegmentFactory : MonoBehaviour {
 
         road.transform.localPosition = (start + end) / 2f;
 
-        road.enabled = false;
-
         //road.junction = CreateJunction(end, dir);
 
         /*road.UpdateBounds();

@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class RoadMap : MonoBehaviour {
 
-    QuadTree<Road> quadTree;
-    public QuadTree<Road> QuadTree {
+    QuadTree<Segment> quadTree;
+    public QuadTree<Segment> QuadTree {
         get
         {
             if (quadTree == null) Initialize();
@@ -14,7 +14,7 @@ public class RoadMap : MonoBehaviour {
 
     private void Initialize()
     {
-        quadTree = new QuadTree<Road>(
+        quadTree = new QuadTree<Segment>(
             new Size(CityConfig.QUADTREE_MIN_SIZE, CityConfig.QUADTREE_MIN_SIZE),
             CityConfig.QUADTREE_MAX_OBJECTS
         );
@@ -23,9 +23,14 @@ public class RoadMap : MonoBehaviour {
     public void AddRoad(Road road)
     {
         if (quadTree == null) Initialize();
-        road.enabled = true;
         quadTree.Insert(road);
         
+    }
+
+    public void AddJunction(Junction junction)
+    {
+        if (quadTree == null) Initialize();
+        quadTree.Insert(junction);
     }
 
 }
