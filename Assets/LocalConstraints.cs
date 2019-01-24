@@ -14,6 +14,17 @@ public class LocalConstraints : MonoBehaviour {
     {
         if (segFactory == null) Initialize();
 
+        // cut off road if outside map bounds
+        bool intersects;
+        Vector3 edgeIntersection = InterestsMapBoundary(road, out intersects);
+        if (intersects)
+        {
+            road.MoveEnd(edgeIntersection);
+            road.severed = true;
+            Junction j = segFactory.CreateJunction(edgeIntersection, Quaternion.identity);
+            j.SetColor(Color.white);
+        }
+
         Rect searchBounds = GetSearchBounds(road);
         List<Segment> matches = roadMap.QuadTree.Query(road.Bounds);
         foreach (Segment other in matches)
@@ -95,6 +106,52 @@ public class LocalConstraints : MonoBehaviour {
         }
 
         return true;
+    }
+
+    Vector3 InterestsMapBoundary(Road r, out bool intersects)
+    {
+        Vector3 intersection = Vector3.zero;
+        if (r.end.x < CityConfig.X_START)
+        {
+            intersection = GetIntersectionPointCoordinates(
+                new Vector2(r.start.x, r.start.z),
+                new Vector2(r.end.x, r.end.z),
+                new Vector2(CityConfig.X_START, 0),
+                new Vector2(CityConfig.X_START, 1),
+                out intersects
+                );
+        } else if (r.end.z < CityConfig.Y_START)
+        {
+            intersection = GetIntersectionPointCoordinates(
+                new Vector2(r.start.x, r.start.z),
+                new Vector2(r.end.x, r.end.z),
+                new Vector2(0, CityConfig.Y_START),
+                new Vector2(1, CityConfig.Y_START),
+                out intersects
+                );
+        } else if (r.end.x > CityConfig.X_START + CityConfig.WIDTH)
+        {
+            intersection = GetIntersectionPointCoordinates(
+                new Vector2(r.start.x, r.start.z),
+                new Vector2(r.end.x, r.end.z),
+                new Vector2(CityConfig.X_START + CityConfig.WIDTH, 0),
+                new Vector2(CityConfig.X_START + CityConfig.WIDTH, 1),
+                out intersects
+                );
+        } else if (r.end.z > CityConfig.Y_START + CityConfig.HEIGHT)
+        {
+            intersection = GetIntersectionPointCoordinates(
+                new Vector2(r.start.x, r.start.z),
+                new Vector2(r.end.x, r.end.z),
+                new Vector2(0, CityConfig.Y_START + CityConfig.HEIGHT),
+                new Vector2(1, CityConfig.Y_START + CityConfig.HEIGHT),
+                out intersects
+                );
+        } else
+        {
+            intersects = false;
+        }
+        return new Vector3(intersection.x, 0, intersection.y);
     }
 
     Rect GetSearchBounds(Road r)

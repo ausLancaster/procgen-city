@@ -41,7 +41,6 @@ public class Game : MonoBehaviour {
         root2.prev.Add(root1);
         priorityQ.Enqueue(root1);
         priorityQ.Enqueue(root2);
-        //segFactory.CreateJunction(Vector3.zero, Quaternion.identity);
 
         int roadCount = 0;
 
@@ -73,5 +72,6 @@ public class Game : MonoBehaviour {
                 Destroy(nextRoad.gameObject);
             }
         }
+        print("Created " + roadCount + " roads!");
     }
 }

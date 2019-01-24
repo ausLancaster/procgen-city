@@ -63,7 +63,6 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
         transform.localPosition = (start + end) / 2f;
         Quaternion dir = Quaternion.FromToRotation(Vector3.right, diff) * Quaternion.Euler(90f, 0, 0);
         transform.localRotation = dir;
-        if (length > 50) print(length);
     }
 
     public Rect UpdateBounds()
