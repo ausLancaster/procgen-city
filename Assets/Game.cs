@@ -16,14 +16,15 @@ public class Game : MonoBehaviour {
         localConstraints = GetComponent<LocalConstraints>();
         map = GetComponent<RoadMap>();
 
-        seed = 0;
-        //seed = Random.Range(0, 65536);
+        //seed = 0;
+        seed = Random.Range(0, 65536);
         Generate(seed);
     }
 
     public void Generate(int seed)
     {
         Random.InitState(seed);
+        Heatmap.Seed(seed);
         PriorityQueue<Road> priorityQ = new PriorityQueue<Road>();
 
         // set up first two segments in centre of map

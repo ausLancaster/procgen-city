@@ -15,7 +15,7 @@ public static class CityConfig {
     public const float MAX_STRAIGHT_ANGLE = 30f; // 30f
     public const float MAX_BRANCH_ANGLE = 15f; //15f
     public const float HIGHWAY_BRANCH_POPULATION_THRESHOLD = 0.3f;
-    public const float STREET_BRANCH_POPULATION_THRESHOLD = 0.3f;
+    public const float STREET_BRANCH_POPULATION_THRESHOLD = 0.6f;
     public const float HIGHWAY_BRANCH_PROBABILITY = 0.05f;
     public const float STREET_BRANCH_PROBABILITY = 0.4f;
     public const float STREET_BRANCH_POPULATION_THRESHOLD_BRANCH_PROBABILITY = 0.4f;
