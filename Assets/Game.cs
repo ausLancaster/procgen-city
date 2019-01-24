@@ -7,6 +7,8 @@ public class Game : MonoBehaviour {
     GlobalGoals globalGoals;
     LocalConstraints localConstraints;
     RoadMap map;
+    [SerializeField]
+    PopMapVisualisation heatmapVis;
     public static int seed;
 
     private void Start()
@@ -16,8 +18,8 @@ public class Game : MonoBehaviour {
         localConstraints = GetComponent<LocalConstraints>();
         map = GetComponent<RoadMap>();
 
-        //seed = 0;
-        seed = Random.Range(0, 65536);
+        seed = 8;
+        //seed = Random.Range(0, 65536);
         Generate(seed);
     }
 
@@ -25,6 +27,7 @@ public class Game : MonoBehaviour {
     {
         Random.InitState(seed);
         Heatmap.Seed(seed);
+        heatmapVis.Generate();
         PriorityQueue<Road> priorityQ = new PriorityQueue<Road>();
 
         // set up first two segments in centre of map
@@ -57,6 +60,10 @@ public class Game : MonoBehaviour {
                     // set up branch links
                     // activate road
                     map.AddRoad(nextRoad);
+                    foreach (Junction j in nextRoad.attachedSegments)
+                    {
+                        map.AddJunction(j);
+                    }
                     roadCount++;
 
                     // generate new possible branches according to global goals

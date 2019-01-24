@@ -17,6 +17,7 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
     public List<Road> prev { get; private set; }
     public List<Road> next { get; private set; }
     public bool severed { get; set; }
+    public bool travelled {get; set;}
 
     private void Awake()
     {
@@ -24,6 +25,7 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
         next = new List<Road>();
         attachedSegments = new List<Junction>();
         severed = false;
+        travelled = false;
     }
 
     public Rect Bounds

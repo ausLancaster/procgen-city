@@ -3,13 +3,15 @@ using UnityEngine;
 
 public static class CityConfig {
 
+    // road generation
+
     public const float WIDTH = 4000f;
     public const float HEIGHT = 4000f;
     public const float X_START = -2000f;
-    public const float Y_START = -2000f;
+    public const float Y_START = -2000f; // -2000f
     public const int MAX_ROADS = 7500;
-    public const float STREET_SEGMENT_LENGTH = 30f;
-    public const float HIGHWAY_SEGMENT_LENGTH = 40f;
+    public const float STREET_SEGMENT_LENGTH = 30f; //30f
+    public const float HIGHWAY_SEGMENT_LENGTH = 40f; //40f
     public const float STREET_SEGMENT_WIDTH = 4f;
     public const float HIGHWAY_SEGMENT_WIDTH = 8f;
     public const float MAX_STRAIGHT_ANGLE = 30f; // 30f
@@ -20,14 +22,12 @@ public static class CityConfig {
     public const float STREET_BRANCH_PROBABILITY = 0.4f;
     public const float STREET_BRANCH_POPULATION_THRESHOLD_BRANCH_PROBABILITY = 0.4f;
     public const int STREET_FROM_HIGHWAY_DELAY = 100;
-    public const float JUNCTION_SIZE = 16f;
     public const int QUADTREE_MAX_OBJECTS = 10;
     public const float QUADTREE_MIN_SIZE = 32f;
     public const float MIN_INTERSECTION_ANGLE = 30f;
     public const float ROAD_SNAP_DISTANCE = 100f;
-    public const bool SHOW_JUNCTIONS = false;
-
-
+    public const float JUNCTION_SIZE = 8f;
+    public const bool SHOW_JUNCTIONS = true;
 
     public static float RandomStraightAngle()
     {
@@ -43,4 +43,6 @@ public static class CityConfig {
     {
         return Random.Range(-limit, limit);
     }
+
+    // building generation
 }

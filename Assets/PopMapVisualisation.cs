@@ -10,7 +10,7 @@ public class PopMapVisualisation : MonoBehaviour {
     Color maxColor = Color.green * 0.7f;
 
 
-    private void Start()
+    public void Generate()
     {
         float step = CityConfig.WIDTH / RESOLUTION;
         for (float i = CityConfig.X_START;

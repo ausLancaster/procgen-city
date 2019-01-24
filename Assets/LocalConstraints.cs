@@ -27,7 +27,6 @@ public class LocalConstraints : MonoBehaviour {
 
         Rect searchBounds = GetSearchBounds(road);
         List<Segment> matches = roadMap.QuadTree.Query(road.Bounds);
-        print(matches.Count);
         foreach (Segment other in matches)
         {
             if (other.GetType() == typeof(Road))
@@ -49,13 +48,12 @@ public class LocalConstraints : MonoBehaviour {
                         {
                             Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
                             j.SetColor(Color.magenta);
-                            roadMap.AddJunction(j);
                             road.attachedSegments.Add(j);
                             road.severed = true;
                             road.MoveEnd(intersection);
 
-                            // split road that is being intersected
-                            // set up links between roads
+                            SetUpNewIntersection(road, otherRoad, intersection, j);
+
                             return true;
                         }
                         else
@@ -73,10 +71,13 @@ public class LocalConstraints : MonoBehaviour {
                     {
                         Junction j = segFactory.CreateJunction(nearestPoint, Quaternion.identity);
                         j.SetColor(Color.yellow);
-                        roadMap.AddJunction(j);
                         road.attachedSegments.Add(j);
                         road.MoveEnd(nearestPoint);
                         road.severed = true;
+
+                        SetUpNewIntersection(road, otherRoad, nearestPoint, j);
+
+
                         return true;
                     }
                 }
@@ -96,9 +97,16 @@ public class LocalConstraints : MonoBehaviour {
                     otherJunction.SetColor(Color.blue);
                     road.MoveEnd(otherJunction.transform.localPosition);
                     road.severed = true;
-                    return true;
 
                     // set up links between roads
+                    foreach (Road r in otherJunction.neighbours)
+                    {
+                        r.next.Add(road);
+                        road.next.Add(r);
+                    }
+                    otherJunction.neighbours.Add(road);
+
+                    return true;
                 }
             }
 
@@ -107,6 +115,24 @@ public class LocalConstraints : MonoBehaviour {
         }
 
         return true;
+    }
+
+    void SetUpNewIntersection(Road road, Road otherRoad, Vector3 intersection, Junction j)
+    {
+        // split road that is being intersected
+        Road newRoad = segFactory.CreateRoad(intersection, otherRoad.end, otherRoad.t, otherRoad.type);
+        otherRoad.MoveEnd(intersection);
+        // set up links between roads
+        newRoad.next.AddRange(otherRoad.next);
+        newRoad.prev.Add(otherRoad);
+        newRoad.next.Add(road);
+        road.next.Add(newRoad);
+        otherRoad.next.Clear();
+        otherRoad.next.Add(newRoad);
+        otherRoad.next.Add(road);
+        j.neighbours.Add(road);
+        j.neighbours.Add(newRoad);
+        j.neighbours.Add(otherRoad);
     }
 
     Vector3 InterestsMapBoundary(Road r, out bool intersects)
