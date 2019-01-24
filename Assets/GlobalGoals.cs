@@ -21,7 +21,7 @@ public class GlobalGoals : MonoBehaviour {
             prevSegment.end,
             prevSegment.transform.localRotation,
             prevSegment.length,
-            0,
+            prevSegment.t + 1,
             prevSegment.type
             );
         float straightPop = Heatmap.Value(continueStraight.end);
@@ -36,7 +36,7 @@ public class GlobalGoals : MonoBehaviour {
                 prevSegment.end,
                 Quaternion.Euler(prevSegment.transform.localEulerAngles.x, newAngle, 0),
                 prevSegment.length,
-                0,
+                prevSegment.t + 1,
                 prevSegment.type
                 );
 
@@ -63,34 +63,34 @@ public class GlobalGoals : MonoBehaviour {
                 Junction j = null;
                 if (Random.value < CityConfig.HIGHWAY_BRANCH_PROBABILITY)
                 {
-                    float leftAngle = prevSegment.transform.localEulerAngles.y - 90 + CityConfig.RnadomBranchAngle();
+                    float leftAngle = prevSegment.transform.localEulerAngles.y - 90 + CityConfig.RandomBranchAngle();
                     Road leftRoad = segFactory.CreateRoad(
                         prevSegment.end,
                         Quaternion.Euler(prevSegment.transform.localEulerAngles.x, leftAngle, 0),
                         prevSegment.length,
-                        0,
+                        prevSegment.t + 1,
                         prevSegment.type
                         );
                     j = segFactory.CreateJunction(prevSegment.end, Quaternion.identity);
                     leftRoad.attachedSegments.Add(j);
                     straight.attachedSegments.Add(j);
-                    roadMap.AddJunction(j);
+                    //roadMap.AddJunction(j);
                     newRoads.Add(leftRoad);
                 }
                 if (Random.value < CityConfig.HIGHWAY_BRANCH_PROBABILITY)
                 {
-                    float rightAngle = prevSegment.transform.localEulerAngles.y + 90 + CityConfig.RnadomBranchAngle();
+                    float rightAngle = prevSegment.transform.localEulerAngles.y + 90 + CityConfig.RandomBranchAngle();
                     Road rightRoad = segFactory.CreateRoad(
                         prevSegment.end,
                         Quaternion.Euler(prevSegment.transform.localEulerAngles.x, rightAngle, 0),
                         prevSegment.length,
-                        0,
+                        prevSegment.t + 1,
                         prevSegment.type
                         );
                     if (j == null)
                     {
                         j = segFactory.CreateJunction(prevSegment.end, Quaternion.identity);
-                        roadMap.AddJunction(j);
+                        //roadMap.AddJunction(j);
                     }
                     rightRoad.attachedSegments.Add(j);
                     straight.attachedSegments.Add(j);
@@ -100,17 +100,58 @@ public class GlobalGoals : MonoBehaviour {
 
             }
         }
-        /*
-        else if (straightPop > CityConfig.ROAD_BRANCH_POPULATION_THRESHOLD)
+        else if (straightPop > CityConfig.STREET_BRANCH_POPULATION_THRESHOLD)
         {
             // do not delete continueStraight
-            //newRoads.Add(continueStraight);
-            DestroyImmediate(continueStraight);// remove this line
+            newRoads.Add(continueStraight);
         }
         else
         {
             DestroyImmediate(continueStraight);
-        }*/
+        }
+
+        // street branches off either highway or streets
+        if (straightPop > CityConfig.STREET_BRANCH_POPULATION_THRESHOLD)
+        {
+            int t = (prevSegment.type == RoadType.Highway) ? CityConfig.STREET_FROM_HIGHWAY_DELAY : 1;
+
+            Junction j = null;
+            if (Random.value < CityConfig.STREET_BRANCH_PROBABILITY)
+            {
+                float leftAngle = prevSegment.transform.localEulerAngles.y - 90 + CityConfig.RandomBranchAngle();
+                Road leftRoad = segFactory.CreateRoad(
+                    prevSegment.end,
+                    Quaternion.Euler(prevSegment.transform.localEulerAngles.x, leftAngle, 0),
+                    CityConfig.STREET_SEGMENT_LENGTH,
+                    prevSegment.t + t,
+                    RoadType.Street
+                    );
+                j = segFactory.CreateJunction(prevSegment.end, Quaternion.identity);
+                leftRoad.attachedSegments.Add(j);
+                continueStraight.attachedSegments.Add(j);
+                //roadMap.AddJunction(j);
+                newRoads.Add(leftRoad);
+            }
+            if (Random.value < CityConfig.STREET_BRANCH_PROBABILITY)
+            {
+                float rightAngle = prevSegment.transform.localEulerAngles.y + 90 + CityConfig.RandomBranchAngle();
+                Road rightRoad = segFactory.CreateRoad(
+                    prevSegment.end,
+                    Quaternion.Euler(prevSegment.transform.localEulerAngles.x, rightAngle, 0),
+                    CityConfig.STREET_SEGMENT_LENGTH,
+                    prevSegment.t + t,
+                    RoadType.Street
+                    );
+                if (j == null)
+                {
+                    j = segFactory.CreateJunction(prevSegment.end, Quaternion.identity);
+                    //roadMap.AddJunction(j);
+                }
+                rightRoad.attachedSegments.Add(j);
+                continueStraight.attachedSegments.Add(j);
+                newRoads.Add(rightRoad);
+            }
+        }
 
         // set up links between roads
         foreach (Road r in newRoads)

@@ -27,6 +27,7 @@ public class LocalConstraints : MonoBehaviour {
 
         Rect searchBounds = GetSearchBounds(road);
         List<Segment> matches = roadMap.QuadTree.Query(road.Bounds);
+        print(matches.Count);
         foreach (Segment other in matches)
         {
             if (other.GetType() == typeof(Road))

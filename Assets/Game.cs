@@ -62,7 +62,6 @@ public class Game : MonoBehaviour {
                     List<Road> goals = globalGoals.Generate(nextRoad, map);
                     foreach (Road r in goals)
                     {
-                        r.t = nextRoad.t + 1;
                         priorityQ.Enqueue(r);
                     }
                 }

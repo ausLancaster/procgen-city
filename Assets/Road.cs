@@ -8,9 +8,9 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
 
     public Vector3 start { get; set; }
     public Vector3 end { get; set; }
-    public float length;
+    public float length { get; set; }
     public event EventHandler BoundsChanged;
-    public float t { get; set; }
+    public float t;
     public List<Junction> attachedSegments { get; set; }
     public RoadType type { get; set; }
     Rect bounds;

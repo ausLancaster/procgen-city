@@ -24,8 +24,6 @@ public class SegmentFactory : MonoBehaviour {
 
     public Road CreateRoad(Vector3 start, Quaternion dir, float length, float t, RoadType type)
     {
-
-
         Vector3 direction = dir * Vector3.right;
         Vector3 end = start + direction * length;
 
