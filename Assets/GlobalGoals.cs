@@ -162,7 +162,7 @@ public class GlobalGoals : MonoBehaviour {
             straight.attachedSegments.Add(j);
             j.neighbours.Add(straight);
         }
-        //branchRoad.attachedSegments.Add(j);
+        branchRoad.attachedSegments.Add(j); // NOT: commenting out changes generation
         j.neighbours.Add(prevSegment);
         j.neighbours.Add(branchRoad);
 

@@ -27,7 +27,7 @@ public class Game : MonoBehaviour {
     {
         Random.InitState(seed);
         Heatmap.Seed(seed);
-        heatmapVis.Generate();
+        if (CityConfig.SHOW_HEATMAP) heatmapVis.Generate();
         PriorityQueue<Road> priorityQ = new PriorityQueue<Road>();
 
         // set up first two segments in centre of map

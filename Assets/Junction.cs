@@ -6,10 +6,12 @@ using UnityEngine;
 public class Junction : MonoBehaviour, Segment {
 
     public List<Road> neighbours {get; set;}
+    public bool added { get; set; }
 
     private void Awake()
     {
         neighbours = new List<Road>();
+        added = false;
     }
 
     public Rect Bounds

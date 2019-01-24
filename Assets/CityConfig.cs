@@ -3,6 +3,11 @@ using UnityEngine;
 
 public static class CityConfig {
 
+    // visualisation
+    public const bool SHOW_HEATMAP = false;
+    public const bool SHOW_JUNCTIONS = true;
+
+
     // road generation
 
     public const float WIDTH = 4000f;
@@ -27,7 +32,6 @@ public static class CityConfig {
     public const float MIN_INTERSECTION_ANGLE = 30f;
     public const float ROAD_SNAP_DISTANCE = 100f;
     public const float JUNCTION_SIZE = 8f;
-    public const bool SHOW_JUNCTIONS = true;
 
     public static float RandomStraightAngle()
     {

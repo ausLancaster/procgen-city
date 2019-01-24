@@ -44,7 +44,7 @@ public class LocalConstraints : MonoBehaviour {
                 {
                     if (found)
                     {
-                        if (anglediff > CityConfig.MIN_INTERSECTION_ANGLE)
+                        if (anglediff > CityConfig.MIN_INTERSECTION_ANGLE || true)
                         {
                             Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
                             j.SetColor(Color.magenta);
@@ -60,10 +60,10 @@ public class LocalConstraints : MonoBehaviour {
                         {
                             Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
                             j.SetColor(Color.red);
-                            return false;
                         }
 
                     }
+
                     // check for potential crossings within snap distance
 
                     Vector3 nearestPoint = NearestPointOnLine(otherRoad.start, otherRoad.end - otherRoad.start, road.end);

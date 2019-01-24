@@ -29,8 +29,12 @@ public class RoadMap : MonoBehaviour {
 
     public void AddJunction(Junction junction)
     {
-        if (quadTree == null) Initialize();
-        quadTree.Insert(junction);
+        if (!junction.added)
+        {
+            if (quadTree == null) Initialize();
+            quadTree.Insert(junction);
+            junction.added = true;
+        }
     }
 
 }
