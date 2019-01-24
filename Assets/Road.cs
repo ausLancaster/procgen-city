@@ -1,5 +1,4 @@
-﻿using CSharpQuadTree;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,18 +13,40 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
     public List<Junction> attachedSegments { get; set; }
     public RoadType type { get; set; }
     Rect bounds;
-    public List<Road> prev { get; private set; }
-    public List<Road> next { get; private set; }
+    Road parent;
+    public List<Neighbour> neighbours { get; private set; }
     public bool severed { get; set; }
-    public bool travelled {get; set;}
+
+    public struct Neighbour
+    {
+        Road r;
+        bool travelled;
+
+        public Neighbour(Road r)
+        {
+            this.r = r;
+            this.travelled = false;
+        }
+    }
+
+    public Road Parent
+    {
+        get
+        {
+            return parent;
+        }
+        set
+        {
+            parent = value;
+            neighbours.Add(new Neighbour(value));
+        }
+    }
 
     private void Awake()
     {
-        prev = new List<Road>();
-        next = new List<Road>();
+        neighbours = new List<Neighbour>();
         attachedSegments = new List<Junction>();
         severed = false;
-        travelled = false;
     }
 
     public Rect Bounds

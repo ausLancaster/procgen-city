@@ -41,8 +41,8 @@ public class Game : MonoBehaviour {
             new Vector3(-CityConfig.HIGHWAY_SEGMENT_LENGTH, 0, 0),
             0,
             RoadType.Highway);
-        root1.prev.Add(root2);
-        root2.prev.Add(root1);
+        root1.Parent = root2;
+        root2.Parent = root1;
         priorityQ.Enqueue(root1);
         priorityQ.Enqueue(root2);
 

@@ -39,8 +39,11 @@ public class LocalConstraints : MonoBehaviour {
                 Vector3 intersection = DoRoadsIntersect(road, otherRoad, out found);
                 float anglediff = Quaternion.Angle(road.transform.localRotation, otherRoad.transform.localRotation);
                 anglediff = Mathf.Abs(anglediff);
-
-                if (!road.prev.Contains(otherRoad) && !road.prev.Contains(otherRoad.prev[0]))
+                if (/*!road.Parent == otherRoad || !road.Parent == otherRoad.Parent*/
+                   !(road.Parent.transform.position == otherRoad.transform.position) &&
+                   !(road.Parent.transform.position == otherRoad.Parent.transform.position)
+                   )
+                
                 {
                     if (found)
                     {
@@ -101,8 +104,8 @@ public class LocalConstraints : MonoBehaviour {
                     // set up links between roads
                     foreach (Road r in otherJunction.neighbours)
                     {
-                        r.next.Add(road);
-                        road.next.Add(r);
+                        r.neighbours.Add(new Road.Neighbour(road));
+                        road.neighbours.Add(new Road.Neighbour(r));
                     }
                     otherJunction.neighbours.Add(road);
 
@@ -123,13 +126,13 @@ public class LocalConstraints : MonoBehaviour {
         Road newRoad = segFactory.CreateRoad(intersection, otherRoad.end, otherRoad.t, otherRoad.type);
         otherRoad.MoveEnd(intersection);
         // set up links between roads
-        newRoad.next.AddRange(otherRoad.next);
-        newRoad.prev.Add(otherRoad);
-        newRoad.next.Add(road);
-        road.next.Add(newRoad);
-        otherRoad.next.Clear();
-        otherRoad.next.Add(newRoad);
-        otherRoad.next.Add(road);
+        newRoad.neighbours.AddRange(otherRoad.neighbours);
+        newRoad.Parent = otherRoad;
+        newRoad.neighbours.Add(new Road.Neighbour(road));
+        road.neighbours.Add(new Road.Neighbour(newRoad));
+        otherRoad.neighbours.Clear();
+        otherRoad.neighbours.Add(new Road.Neighbour(newRoad));
+        otherRoad.neighbours.Add(new Road.Neighbour(road));
         j.neighbours.Add(road);
         j.neighbours.Add(newRoad);
         j.neighbours.Add(otherRoad);

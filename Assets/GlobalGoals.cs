@@ -139,8 +139,8 @@ public class GlobalGoals : MonoBehaviour {
         // set up links between roads
         foreach (Road r in newRoads)
         {
-            r.prev.Add(prevSegment);
-            prevSegment.next.Add(r);
+            r.Parent = prevSegment;
+            prevSegment.neighbours.Add(new Road.Neighbour(r));
         }
 
         return newRoads;
