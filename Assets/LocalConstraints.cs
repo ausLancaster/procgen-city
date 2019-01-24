@@ -14,46 +14,67 @@ public class LocalConstraints : MonoBehaviour {
     {
         if (segFactory == null) Initialize();
 
-        Rect searchBounds = new Rect(
-            road.Bounds.x - CityConfig.ROAD_SNAP_DISTANCE,
-            road.Bounds.y - CityConfig.ROAD_SNAP_DISTANCE,
-            road.Bounds.width + 2f * CityConfig.ROAD_SNAP_DISTANCE,
-            road.Bounds.height + 2f * CityConfig.ROAD_SNAP_DISTANCE
-            );
+        Rect searchBounds = GetSearchBounds(road);
         List<Road> matches = qtree.QuadTree.Query(road.Bounds);
         foreach (Road other in matches)
         {
             // check for intersecting roads
 
             bool found;
-            Vector3 intersection = doRoadsIntersect(road, other, out found);
+            Vector3 intersection = DoRoadsIntersect(road, other, out found);
             float anglediff = Quaternion.Angle(road.transform.localRotation, other.transform.localRotation);
             anglediff = Mathf.Abs(anglediff);
 
             if (!road.prev.Contains(other) && !road.prev.Contains(other.prev[0]))
             {
-                if (found && anglediff > CityConfig.MIN_INTERSECTION_ANGLE)
+                if (found)
                 {
-                    Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
-                    j.SetColor(Color.magenta);
-                    road.severed = true;
-                    road.CutEnd(intersection);
+                    if (anglediff > CityConfig.MIN_INTERSECTION_ANGLE)
+                    {
+                        Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
+                        j.SetColor(Color.magenta);
+                        road.severed = true;
+                        road.CutEnd(intersection);
 
-                    // split road that is being intersected
-                    // set up links between roads
-                    return true;
-                }
-                else
-                {
-                    return false;
+                        // split road that is being intersected
+                        // set up links between roads
+                        return true;
+                    } else
+                    {
+                        Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
+                        j.SetColor(Color.red);
+                        return false;
+                    }
+
                 }
             }
+
+            // check for existing crossings within snap distance
+
+            // check for potential crossings within snap distance
         }
 
         return true;
     }
 
-    Vector3 doRoadsIntersect(Road a, Road b, out bool found)
+    Rect GetSearchBounds(Road r)
+    {
+        float minX, minY, maxX, maxY;
+
+        minX = Mathf.Min(r.start.x, r.end.x - CityConfig.ROAD_SNAP_DISTANCE);
+        minY = Mathf.Min(r.start.y, r.end.y - CityConfig.ROAD_SNAP_DISTANCE);
+        maxX = Mathf.Max(r.start.x, r.end.x + CityConfig.ROAD_SNAP_DISTANCE);
+        maxY = Mathf.Max(r.start.y, r.end.y + CityConfig.ROAD_SNAP_DISTANCE);
+
+        return new Rect(
+            minX,
+            minY,
+            maxX - minX,
+            maxY - minY
+            );
+    }
+
+    Vector3 DoRoadsIntersect(Road a, Road b, out bool found)
     {
         Vector2 p = GetIntersectionPointCoordinates(
             new Vector2(a.start.x, a.start.z),

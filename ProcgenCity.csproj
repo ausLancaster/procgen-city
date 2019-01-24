@@ -87,6 +87,7 @@
     <Compile Include="Assets\QuadTree.cs" />
     <Compile Include="Assets\Road.cs" />
     <Compile Include="Assets\RoadMap.cs" />
+    <Compile Include="Assets\Segment.cs" />
     <Compile Include="Assets\SegmentFactory.cs" />
     <Compile Include="Assets\Size.cs" />
   </ItemGroup>

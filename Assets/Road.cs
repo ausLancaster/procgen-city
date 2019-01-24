@@ -87,7 +87,7 @@ public class Road : MonoBehaviour, IComparable<Road>, IQuadObject
             minX,
             minY,
             Mathf.Max(maxX - minX, 0.001f),
-            Mathf.Max(maxX - minX, 0.001f)
+            Mathf.Max(maxY - minY, 0.001f)
             );
         return bounds;
     }
