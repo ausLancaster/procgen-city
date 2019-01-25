@@ -14,78 +14,90 @@ public class LocalConstraints : MonoBehaviour {
     {
         if (segFactory == null) Initialize();
 
+        int actionPriority = 0;
+        Vector3 finalCrossingIntersection = Vector3.zero;
+        Vector3 finalEdgeIntersection = Vector3.zero;
+        Vector3 finalNewIntersection = Vector3.zero;
+        Road finalOtherRoad = null;
+        Junction finalOtherJunction = null;
+
         // cut off road if outside map bounds
+
         bool intersects;
         Vector3 edgeIntersection = InterestsMapBoundary(road, out intersects);
         if (intersects)
         {
-            road.MoveEnd(edgeIntersection);
-            road.severed = true;
-            Junction j = segFactory.CreateJunction(edgeIntersection, Quaternion.identity);
-            j.SetColor(Color.white);
+            actionPriority = 3;
+            if (finalEdgeIntersection == Vector3.zero ||
+                Vector3.Distance(road.start, edgeIntersection) < Vector3.Distance(road.start, finalEdgeIntersection))
+            {
+                finalEdgeIntersection = edgeIntersection;
+            }
         }
 
         Rect searchBounds = GetSearchBounds(road);
         List<Segment> matches = roadMap.QuadTree.Query(road.Bounds);
+
         foreach (Segment other in matches)
         {
             if (other.GetType() == typeof(Road))
             {
-                Road otherRoad = (Road) other;
 
                 // check for intersecting roads
 
-                bool found;
-                Vector3 intersection = DoRoadsIntersect(road, otherRoad, out found);
-                if (/*!road.Parent == otherRoad || !road.Parent == otherRoad.Parent*/
-                   !(road.Parent.transform.position == otherRoad.transform.position) &&
-                   !(road.Parent.transform.position == otherRoad.Parent.transform.position)
-                   )
-                
+                Road otherRoad = (Road)other;
+
+                if (actionPriority <= 4)
                 {
-                    if (found)
+
+                    bool found;
+                    Vector3 crossingIntersection = DoRoadsIntersect(road, otherRoad, out found);
+                    if (!(road.Parent.id == otherRoad.id) && !(road.Parent.id == otherRoad.Parent.id))
                     {
-                        if (ExceedsMinimumIntersectionAngle(road, otherRoad))
+                        if (found)
                         {
-                            Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
-                            j.SetColor(Color.magenta);
-                            road.attachedSegments.Add(j);
-                            road.severed = true;
-                            road.MoveEnd(intersection);
+                            actionPriority = 4;
 
-                            SetUpNewIntersection(road, otherRoad, intersection, j, roadMap);
+                            if (ExceedsMinimumIntersectionAngle(road, otherRoad))
+                            {
+                                if (finalCrossingIntersection == Vector3.zero ||
+                                    Vector3.Distance(road.start, crossingIntersection) < Vector3.Distance(road.start, finalCrossingIntersection))
+                                {
+                                    finalCrossingIntersection = crossingIntersection;
+                                    finalOtherRoad = otherRoad;
+                                }
+                            }
+                            else
+                            {
+                                Junction j = segFactory.CreateJunction(road.start, Quaternion.identity);
+                                j.SetColor(Color.red);
 
-                            return true;
+                                return false;
+                            }
                         }
-                        else
-                        {
-                            Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
-                            j.SetColor(Color.red);
-                        }
-
-                    }
-
-                    // check for potential crossings within snap distance
-
-                    Vector3 nearestPoint = NearestPointOnLine(otherRoad.start, otherRoad.end - otherRoad.start, road.end);
-                    if (Vector3.Distance(nearestPoint, road.end) < CityConfig.ROAD_SNAP_DISTANCE)
-                    {
-                        Junction j = segFactory.CreateJunction(nearestPoint, Quaternion.identity);
-                        j.SetColor(Color.yellow);
-                        road.attachedSegments.Add(j);
-                        road.MoveEnd(nearestPoint);
-                        road.severed = true;
-
-                        SetUpNewIntersection(road, otherRoad, nearestPoint, j, roadMap);
-
-
-                        return true;
                     }
                 }
 
-          
+                if (actionPriority <= 1)
+                {
+
+                    // check for potential crossings within snap distance
+
+                    Vector3 newIntersection = NearestPointOnLine(otherRoad.start, otherRoad.end - otherRoad.start, road.end);
+                    if (Vector3.Distance(newIntersection, road.end) < CityConfig.ROAD_SNAP_DISTANCE)
+                    {
+                        actionPriority = 1;
+
+                        if (finalNewIntersection == Vector3.zero ||
+                            Vector3.Distance(road.start, newIntersection) < Vector3.Distance(road.start, finalNewIntersection))
+                        {
+                            finalNewIntersection = newIntersection;
+                            finalOtherRoad = otherRoad;
+                        }
+                    }
+                }
             }
-            else if (other.GetType() == typeof(Junction))
+            else if (actionPriority <= 2 && other.GetType() == typeof(Junction))
             {
                 Junction otherJunction = (Junction) other;
 
@@ -95,24 +107,13 @@ public class LocalConstraints : MonoBehaviour {
                     Vector3.Distance(otherJunction.transform.localPosition, road.end) < CityConfig.ROAD_SNAP_DISTANCE
                     )
                 {
-                    otherJunction.SetColor(Color.blue);
-                    road.MoveEnd(otherJunction.transform.localPosition);
-                    road.severed = true;
+                    actionPriority = 2;
+                    if (finalOtherJunction == null ||
 
-                    // set up links between roads
-                    foreach (Road r in otherJunction.outgoing)
+                        Vector3.Distance(road.start, otherJunction.transform.position) < Vector3.Distance(road.start, finalOtherJunction.transform.position))
                     {
-                        r.prev.Add(new Road.Neighbour(road, true));
-                        road.next.Add(new Road.Neighbour(r, true));
+                        finalOtherJunction = otherJunction;
                     }
-                    foreach (Road r in otherJunction.incoming)
-                    {
-                        r.next.Add(new Road.Neighbour(road, false));
-                        road.next.Add(new Road.Neighbour(r, false));
-                    }
-                    otherJunction.incoming.Add(road);
-
-                    return true;
                 }
             }
 
@@ -120,7 +121,75 @@ public class LocalConstraints : MonoBehaviour {
 
         }
 
+        if (actionPriority == 4)
+        {
+            MakeRoadIntersection(road, finalOtherRoad, finalCrossingIntersection, roadMap);
+
+        } else if (actionPriority == 3)
+        {
+            MakeEdgeIntersection(road, finalEdgeIntersection);
+
+        } else if (actionPriority == 2)
+        {
+            SnapToExistingJunction(road, finalOtherJunction);
+
+        } else if (actionPriority == 1)
+        {
+            SnapToNewJunction(road, finalOtherRoad, finalNewIntersection, roadMap);
+
+        }
+
         return true;
+    }
+
+    void MakeRoadIntersection(Road road, Road otherRoad, Vector3 intersection, RoadMap roadMap)
+    {
+        Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
+        j.SetColor(Color.magenta);
+        road.attachedSegments.Add(j);
+        road.severed = true;
+        road.MoveEnd(intersection);
+
+        SetUpNewIntersection(road, otherRoad, intersection, j, roadMap);
+    }
+
+    void MakeEdgeIntersection(Road road, Vector3 intersection)
+    {
+        road.MoveEnd(intersection);
+        road.severed = true;
+        Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
+        j.SetColor(Color.white);
+    }
+
+    void SnapToExistingJunction(Road road, Junction otherJunction)
+    {
+        otherJunction.SetColor(Color.blue);
+        road.MoveEnd(otherJunction.transform.localPosition);
+        road.severed = true;
+
+        // set up links between roads
+        foreach (Road r in otherJunction.outgoing)
+        {
+            r.prev.Add(new Road.Neighbour(road, true));
+            road.next.Add(new Road.Neighbour(r, true));
+        }
+        foreach (Road r in otherJunction.incoming)
+        {
+            r.next.Add(new Road.Neighbour(road, false));
+            road.next.Add(new Road.Neighbour(r, false));
+        }
+        otherJunction.incoming.Add(road);
+    }
+
+    void SnapToNewJunction(Road road, Road otherRoad, Vector3 intersection, RoadMap roadMap)
+    {
+        Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
+        j.SetColor(Color.yellow);
+        road.attachedSegments.Add(j);
+        road.MoveEnd(intersection);
+        road.severed = true;
+
+        SetUpNewIntersection(road, otherRoad, intersection, j, roadMap);
     }
 
     bool ExceedsMinimumIntersectionAngle(Road a, Road b)

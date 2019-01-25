@@ -12,21 +12,20 @@ public class LotsGenerator : MonoBehaviour {
     {
         foreach (Road r in allRoads)
         {
-            if (r.id == 5038)
+            if (true)
             {
                 List<Vector3> corners = new List<Vector3>();
                 if (SearchForLot(r, r, r, true, corners, false))
                 {
                     Lot lot = Instantiate(lotPrefab);
                     lot.Initialize(corners);
-                }/*
+                }
                 if (SearchForLot(r, r, r, false, corners, false))
                 {
                     Lot lot = Instantiate(lotPrefab);
                     lot.Initialize(corners);
-                }*/
+                }
             }
-            if (r.id == 5221) r.SetColor(Color.green);
 
         }
         return new List<Lot>();
@@ -70,6 +69,16 @@ public class LotsGenerator : MonoBehaviour {
                 minAngle = angle;
                 next = neighbour;
             }
+        }
+        print(str);
+        str = forward ? "prev" : "next";
+        str += ": ";
+        neighbours = forward ? current.prev : current.next;
+        foreach (Road.Neighbour neighbour in neighbours)
+        {
+            str += neighbour.r.id.ToString();
+            str += neighbour.sameDirection ? "same" : "notsame";
+            str += ", ";
         }
         print(str);
         /*if (next == null)
