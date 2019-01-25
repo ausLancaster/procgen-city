@@ -76,7 +76,7 @@ public class Game : MonoBehaviour {
                     }
                 } else
                 {
-                    Destroy(nextRoad);
+                    Destroy(nextRoad.gameObject);
                 }
             } else
             {
@@ -86,6 +86,6 @@ public class Game : MonoBehaviour {
         }
         print("Created " + roadCount + " roads!");
 
-        //lotsGenerator.Generate(map.allRoads);
+        lotsGenerator.Generate(map.allRoads);
     }
 }

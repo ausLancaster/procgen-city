@@ -100,12 +100,17 @@ public class LocalConstraints : MonoBehaviour {
                     road.severed = true;
 
                     // set up links between roads
-                    foreach (Road r in otherJunction.neighbours)
+                    foreach (Road r in otherJunction.outgoing)
                     {
-                        r.neighbours.Add(new Road.Neighbour(road));
-                        road.neighbours.Add(new Road.Neighbour(r));
+                        r.prev.Add(new Road.Neighbour(road, true));
+                        road.next.Add(new Road.Neighbour(r, true));
                     }
-                    otherJunction.neighbours.Add(road);
+                    foreach (Road r in otherJunction.incoming)
+                    {
+                        r.next.Add(new Road.Neighbour(road, false));
+                        road.next.Add(new Road.Neighbour(r, false));
+                    }
+                    otherJunction.incoming.Add(road);
 
                     return true;
                 }
@@ -131,17 +136,18 @@ public class LocalConstraints : MonoBehaviour {
         // split road that is being intersected
         Road newRoad = segFactory.CreateRoad(intersection, otherRoad.end, otherRoad.t, otherRoad.type);
         otherRoad.MoveEnd(intersection);
+
         // set up links between roads
-        newRoad.neighbours.AddRange(otherRoad.neighbours);
+        newRoad.next.AddRange(otherRoad.next);
         newRoad.Parent = otherRoad;
-        newRoad.neighbours.Add(new Road.Neighbour(road));
-        road.neighbours.Add(new Road.Neighbour(newRoad));
-        otherRoad.neighbours.Clear();
-        otherRoad.neighbours.Add(new Road.Neighbour(newRoad));
-        otherRoad.neighbours.Add(new Road.Neighbour(road));
-        j.neighbours.Add(road);
-        j.neighbours.Add(newRoad);
-        j.neighbours.Add(otherRoad);
+        newRoad.prev.Add(new Road.Neighbour(road, true));
+        road.next.Add(new Road.Neighbour(newRoad, true));
+        otherRoad.next.Clear();
+        otherRoad.next.Add(new Road.Neighbour(newRoad, true));
+        otherRoad.next.Add(new Road.Neighbour(road, false));
+        j.incoming.Add(road);
+        j.outgoing.Add(newRoad);
+        j.incoming.Add(otherRoad);
         map.AddRoad(newRoad);
     }
 

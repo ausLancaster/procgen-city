@@ -99,7 +99,7 @@ public class GlobalGoals : MonoBehaviour {
         }
         else
         {
-            DestroyImmediate(continueStraight);
+            DestroyImmediate(continueStraight.gameObject);
         }
 
         // street branches off either highway or streets
@@ -140,7 +140,14 @@ public class GlobalGoals : MonoBehaviour {
         foreach (Road r in newRoads)
         {
             r.Parent = prevSegment;
-            prevSegment.neighbours.Add(new Road.Neighbour(r));
+            prevSegment.next.Add(new Road.Neighbour(r, true));
+            foreach (Road r_other in newRoads)
+            {
+                if (r_other.id != r.id)
+                {
+                    r.prev.Add(new Road.Neighbour(r_other, false));
+                }
+            }
         }
 
         return newRoads;
@@ -160,11 +167,11 @@ public class GlobalGoals : MonoBehaviour {
         {
             j = segFactory.CreateJunction(prevSegment.end, Quaternion.identity);
             straight.attachedSegments.Add(j);
-            j.neighbours.Add(straight);
+            j.outgoing.Add(straight);
         }
         branchRoad.attachedSegments.Add(j);
-        j.neighbours.Add(prevSegment);
-        j.neighbours.Add(branchRoad);
+        j.incoming.Add(prevSegment);
+        j.outgoing.Add(branchRoad);
 
         return branchRoad;
     }

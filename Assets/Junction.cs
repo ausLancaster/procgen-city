@@ -5,12 +5,14 @@ using UnityEngine;
 
 public class Junction : MonoBehaviour, Segment {
 
-    public List<Road> neighbours {get; set;}
+    public List<Road> incoming {get; set;}
+    public List<Road> outgoing { get; set; }
     public bool added { get; set; }
 
     private void Awake()
     {
-        neighbours = new List<Road>();
+        incoming = new List<Road>();
+        outgoing = new List<Road>();
         added = false;
     }
 

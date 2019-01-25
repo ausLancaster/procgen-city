@@ -84,6 +84,8 @@
     <Compile Include="Assets\LocalConstraints.cs" />
     <Compile Include="Assets\Lot.cs" />
     <Compile Include="Assets\LotsGenerator.cs" />
+    <Compile Include="Assets\MeshBuilder.cs" />
+    <Compile Include="Assets\Polygon.cs" />
     <Compile Include="Assets\PopMapVisualisation.cs" />
     <Compile Include="Assets\PriorityQueue.cs" />
     <Compile Include="Assets\QuadTree.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="Assets\Segment.cs" />
     <Compile Include="Assets\SegmentFactory.cs" />
     <Compile Include="Assets\Size.cs" />
+    <Compile Include="Assets\TestPolygon.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

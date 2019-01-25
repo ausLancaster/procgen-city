@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Road : MonoBehaviour, IComparable<Road>, Segment
 {
-    public int id { get; private set; }
+    //public int id { get; private set; }
+    public int id;
     public Vector3 start { get; private set; }
     public Vector3 end { get; private set; }
     public float length { get; private set; }
@@ -13,19 +14,22 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
 
     public event EventHandler BoundsChanged;
     public List<Junction> attachedSegments { get; private set; }
-    public List<Neighbour> neighbours { get; private set; }
+    public List<Neighbour> prev { get; private set; }
+    public List<Neighbour> next { get; private set; }
     Rect bounds;
     Road parent;
     public bool severed { get; set; }
 
     public class Neighbour
     {
-        public Road r;
+        public Road r { get; private set; }
+        public bool sameDirection { get; private set; }
         public bool travelled { get; set; }
 
-        public Neighbour(Road r)
+        public Neighbour(Road r, bool sameDirection)
         {
             this.r = r;
+            this.sameDirection = sameDirection;
             this.travelled = false;
         }
     }
@@ -49,13 +53,14 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
         set
         {
             parent = value;
-            neighbours.Add(new Neighbour(value));
+            prev.Add(new Neighbour(value, true));
         }
     }
 
     private void Awake()
     {
-        neighbours = new List<Neighbour>();
+        prev = new List<Neighbour>();
+        next = new List<Neighbour>();
         attachedSegments = new List<Junction>();
         severed = false;
     }
@@ -77,9 +82,43 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
 
     private void OnDestroy()
     {
+        if (prev != null)
+        {
+            foreach (Neighbour n in prev)
+            {
+                n.r.RemoveNeighbour(this);
+            }
+        }
+        if (next != null)
+        {
+            foreach (Neighbour n in next)
+            {
+                n.r.RemoveNeighbour(this);
+            }
+        }
         foreach (Junction s in attachedSegments)
         {
             if (s != null) Destroy(s.gameObject);
+        }
+    }
+
+    public void RemoveNeighbour(Road r)
+    {
+        foreach (Neighbour n in next)
+        {
+            if (n.r == r)
+            {
+                next.Remove(n);
+                return;
+            }
+        }
+        foreach (Neighbour n in prev)
+        {
+            if (n.r == r)
+            {
+                next.Remove(n);
+                return;
+            }
         }
     }
 
