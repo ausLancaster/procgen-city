@@ -74,6 +74,9 @@ public class Game : MonoBehaviour {
                     {
                         priorityQ.Enqueue(r);
                     }
+                } else
+                {
+                    Destroy(nextRoad);
                 }
             } else
             {

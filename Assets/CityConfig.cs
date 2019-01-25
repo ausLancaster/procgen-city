@@ -5,7 +5,16 @@ public static class CityConfig {
 
     // visualisation
     public const bool SHOW_HEATMAP = false;
-    public const bool SHOW_JUNCTIONS = false;
+    /*
+     * grey: normal branch
+     * magenta: intersecting roads
+     * yellow: snap to potential crossing
+     * blue: snap to existing crossing
+     * ---
+     * red: less than minimum angle
+     * white: edge of map
+     * */
+    public const bool SHOW_JUNCTIONS = true;
 
 
     // road generation
@@ -30,7 +39,7 @@ public static class CityConfig {
     public const int QUADTREE_MAX_OBJECTS = 10;
     public const float QUADTREE_MIN_SIZE = 32f;
     public const float MIN_INTERSECTION_ANGLE = 30f;
-    public const float ROAD_SNAP_DISTANCE = 100f;
+    public const float ROAD_SNAP_DISTANCE = 20f;
     public const float JUNCTION_SIZE = 8f;
 
     public static float RandomStraightAngle()

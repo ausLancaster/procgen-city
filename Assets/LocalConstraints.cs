@@ -37,8 +37,6 @@ public class LocalConstraints : MonoBehaviour {
 
                 bool found;
                 Vector3 intersection = DoRoadsIntersect(road, otherRoad, out found);
-                float anglediff = Quaternion.Angle(road.transform.localRotation, otherRoad.transform.localRotation);
-                anglediff = Mathf.Abs(anglediff);
                 if (/*!road.Parent == otherRoad || !road.Parent == otherRoad.Parent*/
                    !(road.Parent.transform.position == otherRoad.transform.position) &&
                    !(road.Parent.transform.position == otherRoad.Parent.transform.position)
@@ -47,7 +45,7 @@ public class LocalConstraints : MonoBehaviour {
                 {
                     if (found)
                     {
-                        if (anglediff > CityConfig.MIN_INTERSECTION_ANGLE || true)
+                        if (ExceedsMinimumIntersectionAngle(road, otherRoad))
                         {
                             Junction j = segFactory.CreateJunction(intersection, Quaternion.identity);
                             j.SetColor(Color.magenta);
@@ -118,6 +116,14 @@ public class LocalConstraints : MonoBehaviour {
         }
 
         return true;
+    }
+
+    bool ExceedsMinimumIntersectionAngle(Road a, Road b)
+    {
+        float anglediff = Quaternion.Angle(a.transform.localRotation, b.transform.localRotation);
+        anglediff = Mathf.Abs(anglediff);
+        float reverseAnglediff = Mathf.Abs(anglediff + 180);
+        return anglediff > CityConfig.MIN_INTERSECTION_ANGLE && reverseAnglediff > CityConfig.MIN_INTERSECTION_ANGLE;
     }
 
     void SetUpNewIntersection(Road road, Road otherRoad, Vector3 intersection, Junction j, RoadMap map)
