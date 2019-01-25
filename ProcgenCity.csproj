@@ -82,6 +82,8 @@
     <Compile Include="Assets\IQuadObject.cs" />
     <Compile Include="Assets\Junction.cs" />
     <Compile Include="Assets\LocalConstraints.cs" />
+    <Compile Include="Assets\Lot.cs" />
+    <Compile Include="Assets\LotsGenerator.cs" />
     <Compile Include="Assets\PopMapVisualisation.cs" />
     <Compile Include="Assets\PriorityQueue.cs" />
     <Compile Include="Assets\QuadTree.cs" />

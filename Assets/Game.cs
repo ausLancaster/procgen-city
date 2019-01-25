@@ -9,6 +9,7 @@ public class Game : MonoBehaviour {
     RoadMap map;
     [SerializeField]
     PopMapVisualisation heatmapVis;
+    LotsGenerator lotsGenerator;
     public static int seed;
 
     private void Start()
@@ -17,6 +18,7 @@ public class Game : MonoBehaviour {
         globalGoals = GetComponent<GlobalGoals>();
         localConstraints = GetComponent<LocalConstraints>();
         map = GetComponent<RoadMap>();
+        lotsGenerator = GetComponent<LotsGenerator>();
 
         seed = 8;
         //seed = Random.Range(0, 65536);
@@ -80,5 +82,7 @@ public class Game : MonoBehaviour {
             }
         }
         print("Created " + roadCount + " roads!");
+
+        //lotsGenerator.Generate(map.allRoads);
     }
 }

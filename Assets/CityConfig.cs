@@ -4,7 +4,7 @@ using UnityEngine;
 public static class CityConfig {
 
     // visualisation
-    public const bool SHOW_HEATMAP = true;
+    public const bool SHOW_HEATMAP = false;
     public const bool SHOW_JUNCTIONS = false;
 
 

@@ -8,6 +8,8 @@ public class SegmentFactory : MonoBehaviour {
     [SerializeField]
     Junction junctionPrefab;
 
+    int numberOfRoads = 0;
+
 
     private void Start()
     {
@@ -34,11 +36,8 @@ public class SegmentFactory : MonoBehaviour {
     Road CreateRoad(Vector3 start, Vector3 end, Quaternion dir, float length, float t, RoadType type)
     {
         Road road = Instantiate(roadPrefab);
-        road.start = start;
-        road.end = end;
-        road.length = length;
-        road.t = t;
-        road.type = type;
+        road.Initialize(numberOfRoads, start, end, length, t, type);
+        numberOfRoads++;
 
 
         float width;
@@ -51,12 +50,13 @@ public class SegmentFactory : MonoBehaviour {
 
         road.transform.localPosition = (start + end) / 2f;
 
+        road.UpdateBounds();
+
         //road.junction = CreateJunction(end, dir);
 
-        /*road.UpdateBounds();
         Rect bounds = road.Bounds;
 
-        road.junction = CreateJunction(
+        /*road.junction = CreateJunction(
             new Vector3(bounds.center.x, 0, bounds.center.y),
             new Vector3(bounds.width, bounds.height, 1f),
             Quaternion.identity

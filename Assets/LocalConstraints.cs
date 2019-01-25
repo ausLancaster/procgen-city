@@ -55,7 +55,7 @@ public class LocalConstraints : MonoBehaviour {
                             road.severed = true;
                             road.MoveEnd(intersection);
 
-                            SetUpNewIntersection(road, otherRoad, intersection, j);
+                            SetUpNewIntersection(road, otherRoad, intersection, j, roadMap);
 
                             return true;
                         }
@@ -78,7 +78,7 @@ public class LocalConstraints : MonoBehaviour {
                         road.MoveEnd(nearestPoint);
                         road.severed = true;
 
-                        SetUpNewIntersection(road, otherRoad, nearestPoint, j);
+                        SetUpNewIntersection(road, otherRoad, nearestPoint, j, roadMap);
 
 
                         return true;
@@ -120,7 +120,7 @@ public class LocalConstraints : MonoBehaviour {
         return true;
     }
 
-    void SetUpNewIntersection(Road road, Road otherRoad, Vector3 intersection, Junction j)
+    void SetUpNewIntersection(Road road, Road otherRoad, Vector3 intersection, Junction j, RoadMap map)
     {
         // split road that is being intersected
         Road newRoad = segFactory.CreateRoad(intersection, otherRoad.end, otherRoad.t, otherRoad.type);
@@ -136,6 +136,7 @@ public class LocalConstraints : MonoBehaviour {
         j.neighbours.Add(road);
         j.neighbours.Add(newRoad);
         j.neighbours.Add(otherRoad);
+        map.AddRoad(newRoad);
     }
 
     Vector3 InterestsMapBoundary(Road r, out bool intersects)

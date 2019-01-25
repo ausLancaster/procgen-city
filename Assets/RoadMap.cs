@@ -1,9 +1,11 @@
 ﻿using CSharpQuadTree;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class RoadMap : MonoBehaviour {
 
     QuadTree<Segment> quadTree;
+    public List<Road> allRoads { get; set; }
     public QuadTree<Segment> QuadTree {
         get
         {
@@ -24,6 +26,8 @@ public class RoadMap : MonoBehaviour {
     {
         if (quadTree == null) Initialize();
         quadTree.Insert(road);
+        if (allRoads == null) allRoads = new List<Road>();
+        allRoads.Add(road);
         
     }
 

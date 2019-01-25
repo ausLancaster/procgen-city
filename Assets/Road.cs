@@ -4,29 +4,40 @@ using UnityEngine;
 
 public class Road : MonoBehaviour, IComparable<Road>, Segment
 {
+    public int id { get; private set; }
+    public Vector3 start { get; private set; }
+    public Vector3 end { get; private set; }
+    public float length { get; private set; }
+    public float t { get; private set; }
+    public RoadType type { get; private set; }
 
-    public Vector3 start { get; set; }
-    public Vector3 end { get; set; }
-    public float length { get; set; }
     public event EventHandler BoundsChanged;
-    public float t;
-    public List<Junction> attachedSegments { get; set; }
-    public RoadType type { get; set; }
+    public List<Junction> attachedSegments { get; private set; }
+    public List<Neighbour> neighbours { get; private set; }
     Rect bounds;
     Road parent;
-    public List<Neighbour> neighbours { get; private set; }
     public bool severed { get; set; }
 
-    public struct Neighbour
+    public class Neighbour
     {
-        Road r;
-        bool travelled;
+        public Road r;
+        public bool travelled { get; set; }
 
         public Neighbour(Road r)
         {
             this.r = r;
             this.travelled = false;
         }
+    }
+
+    public void Initialize(int id, Vector3 start, Vector3 end, float length, float t, RoadType type)
+    {
+        this.id = id;
+        this.start = start;
+        this.end = end;
+        this.length = length;
+        this.t = t;
+        this.type = type;
     }
 
     public Road Parent
@@ -53,7 +64,7 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
     {
         get
         {
-            bounds = UpdateBounds();
+            if (bounds == null) UpdateBounds();
             return bounds;
         }
     }
@@ -117,6 +128,11 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
             Mathf.Max(maxX - minX, 0.001f),
             Mathf.Max(maxY - minY, 0.001f)
             );
+
+        EventHandler handler = BoundsChanged;
+        if (handler != null)
+            handler(this, new EventArgs());
+
         return bounds;
     }
 }
