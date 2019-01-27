@@ -211,6 +211,13 @@ public class LocalConstraints : MonoBehaviour {
         newRoad.Parent = otherRoad;
         newRoad.prev.Add(new Road.Neighbour(road, true));
         road.next.Add(new Road.Neighbour(newRoad, true));
+        road.next.Add(new Road.Neighbour(otherRoad, false));
+        foreach (Road.Neighbour n in otherRoad.next)
+        {
+            n.r.RemoveNeighbour(otherRoad);
+            n.r.prev.Add(new Road.Neighbour(newRoad, true));
+        }
+
         otherRoad.next.Clear();
         otherRoad.next.Add(new Road.Neighbour(newRoad, true));
         otherRoad.next.Add(new Road.Neighbour(road, false));

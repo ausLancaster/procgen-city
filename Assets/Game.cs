@@ -86,6 +86,6 @@ public class Game : MonoBehaviour {
         }
         print("Created " + roadCount + " roads!");
 
-        //lotsGenerator.Generate(map.allRoads);
+        lotsGenerator.Generate(map.allRoads);
     }
 }

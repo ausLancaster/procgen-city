@@ -8,22 +8,29 @@ public class LotsGenerator : MonoBehaviour {
     [SerializeField]
     Lot lotPrefab;
 
+    bool printDebug = false;
+
+
     public List<Lot> Generate(List<Road> allRoads)
     {
         foreach (Road r in allRoads)
         {
-            if (true)
+            if (r.id == 11420 || true)
             {
+                if (printDebug) print("BEGINFORWARD");
                 List<Vector3> corners = new List<Vector3>();
                 if (SearchForLot(r, r, r, true, corners, false))
                 {
                     Lot lot = Instantiate(lotPrefab);
                     lot.Initialize(corners);
+                    if (printDebug) print("found");
                 }
+                if (printDebug) print("BEGINBACKWARD");
                 if (SearchForLot(r, r, r, false, corners, false))
                 {
                     Lot lot = Instantiate(lotPrefab);
                     lot.Initialize(corners);
+                    if (printDebug) print("found");
                 }
             }
 
@@ -33,7 +40,7 @@ public class LotsGenerator : MonoBehaviour {
 
     bool SearchForLot(Road original, Road current, Road prev, bool forward, List<Vector3> corners, bool convex)
     {
-        print("---" + current.id + " " + forward);
+        if (printDebug) print("---" + current.id + " " + forward);
         if (forward)
         {
             corners.Add(current.end);
@@ -50,7 +57,7 @@ public class LotsGenerator : MonoBehaviour {
         List<Road.Neighbour> neighbours = forward ? current.next : current.prev;
         string str = forward ? "next" : "prev";
         str += ": ";
-        float minAngle = Mathf.Infinity;
+        float maxAngle = Mathf.NegativeInfinity;
         Road.Neighbour next = null;
         foreach (Road.Neighbour neighbour in neighbours)
         {
@@ -63,14 +70,14 @@ public class LotsGenerator : MonoBehaviour {
                 forward,
                 neighbour.sameDirection
                 );
-            print("result:" + angle);
-            if (angle < minAngle)
+            if (printDebug) print("result:" + angle);
+            if (angle > maxAngle)
             {
-                minAngle = angle;
+                maxAngle = angle;
                 next = neighbour;
             }
         }
-        print(str);
+        if (printDebug) print(str);
         str = forward ? "prev" : "next";
         str += ": ";
         neighbours = forward ? current.prev : current.next;
@@ -80,7 +87,7 @@ public class LotsGenerator : MonoBehaviour {
             str += neighbour.sameDirection ? "same" : "notsame";
             str += ", ";
         }
-        print(str);
+        if (printDebug) print(str);
         /*if (next == null)
         {
             foreach (Road.Neighbour neighbour in current.neighbours)
@@ -93,7 +100,7 @@ public class LotsGenerator : MonoBehaviour {
         next.travelled = true;
 
         // angle is convex: failed search (but continue)
-        if (minAngle > 180) convex = true;
+        if (maxAngle < 180) convex = true;
 
         // if next is same as original, we have successfully completed a loop
         if (next.r.id == original.id)
@@ -102,34 +109,39 @@ public class LotsGenerator : MonoBehaviour {
         return SearchForLot(original, next.r, current, next.sameDirection == forward, corners, convex);
     }
 
-    float GetAngle(Quaternion a, Quaternion b, bool forward, bool sameDirection)
+    public static float GetAngle(Quaternion a, Quaternion b, bool forward, bool sameDirection)
     {
-        //print("a:" + a.eulerAngles.y + " b:" + b.eulerAngles.y);
         if (sameDirection)
         {
             if (forward)
             {
-                return Quaternion.Angle(Get180(a),  b);
+                float diff = Mathf.DeltaAngle(a.eulerAngles.y + 180, b.eulerAngles.y);
+                if (diff < 0) diff += 360;
+                return diff;
             } else
             {
-                //print(a.eulerAngles);
-                //print(Get180(b).eulerAngles);
-                return Quaternion.Angle(a, Get180(b));//
+                float diff = Mathf.DeltaAngle(a.eulerAngles.y, b.eulerAngles.y + 180);
+                if (diff < 0) diff += 360;
+                return diff;
             }
         } else
         {
             if (forward)
             {
-                return Quaternion.Angle(Get180(a), Get180(b));
+                float diff = Mathf.DeltaAngle(a.eulerAngles.y + 180, b.eulerAngles.y + 180);
+                if (diff < 0) diff += 360;
+                return diff;
             } else
             {
-                return Quaternion.Angle(a, b);
+                float diff = Mathf.DeltaAngle(a.eulerAngles.y, b.eulerAngles.y);
+                if (diff < 0) diff += 360;
+                return diff;
             }
         }
     }
 
-    Quaternion Get180(Quaternion q)
+    static Quaternion Get180(Quaternion q)
     {
-        return q * Quaternion.Euler(180f, 180f, 0);
+        return q * Quaternion.Euler(0, 180f, 0);
     }
 }

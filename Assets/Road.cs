@@ -106,7 +106,7 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
     {
         foreach (Neighbour n in next)
         {
-            if (n.r == r)
+            if (n.r.id == r.id)
             {
                 next.Remove(n);
                 return;
@@ -114,9 +114,9 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
         }
         foreach (Neighbour n in prev)
         {
-            if (n.r == r)
+            if (n.r.id == r.id)
             {
-                next.Remove(n);
+                prev.Remove(n);
                 return;
             }
         }
