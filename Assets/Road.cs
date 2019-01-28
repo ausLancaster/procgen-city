@@ -122,6 +122,30 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
         }
     }
 
+    public void ReplaceNeighbour(Road existing, Road replacement)
+    {
+        foreach (Neighbour n in next)
+        {
+            if (n.r.id == existing.id)
+            {
+                bool sameDirection = n.sameDirection;
+                next.Remove(n);
+                next.Add(new Neighbour(replacement, sameDirection));
+                return;
+            }
+        }
+        foreach (Neighbour n in prev)
+        {
+            if (n.r.id == existing.id)
+            {
+                bool sameDirection = n.sameDirection;
+                prev.Remove(n);
+                prev.Add(new Neighbour(replacement, sameDirection));
+                return;
+            }
+        }
+    }
+
     public void SetColor(Color col)
     {
         GetComponent<MeshRenderer>().material.color = col;
@@ -136,6 +160,7 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
         transform.localPosition = (start + end) / 2f;
         Quaternion dir = Quaternion.FromToRotation(Vector3.right, diff) * Quaternion.Euler(90f, 0, 0);
         transform.localRotation = dir;
+        UpdateBounds();
     }
 
     public Rect UpdateBounds()

@@ -15,7 +15,7 @@ public class LocalConstraints : MonoBehaviour {
 
     public bool Check(Road road, RoadMap roadMap)
     {
-        if (stop) return false;
+        if (stop) return false; // delete this
         foreach (int i in nums)
         {
             if (road.id == i)
@@ -81,8 +81,11 @@ public class LocalConstraints : MonoBehaviour {
                             }
                             else
                             {
-                                Junction j = segFactory.CreateJunction(road.start, Quaternion.identity);
-                                j.SetColor(Color.red);
+                                if (CityConfig.SHOW_FAILED_JUNCTIONS)
+                                {
+                                    Junction j = segFactory.CreateJunction(road.start, Quaternion.identity);
+                                    j.SetColor(Color.red);
+                                }
 
                                 return false;
                             }
@@ -111,8 +114,11 @@ public class LocalConstraints : MonoBehaviour {
                         }
                         else
                         {
-                            Junction j = segFactory.CreateJunction(road.start, Quaternion.identity);
-                            j.SetColor(Color.red);
+                            if (CityConfig.SHOW_FAILED_JUNCTIONS)
+                            {
+                                Junction j = segFactory.CreateJunction(road.start, Quaternion.identity);
+                                j.SetColor(Color.red);
+                            }
 
                             return false;
                         }
@@ -226,10 +232,26 @@ public class LocalConstraints : MonoBehaviour {
     void SetUpNewIntersection(Road road, Road otherRoad, Vector3 intersection, Junction j, RoadMap map)
     {
 
+
         // split road that is being intersected
         Road newRoad = segFactory.CreateRoad(intersection, otherRoad.end, otherRoad.t, otherRoad.type);
         otherRoad.MoveEnd(intersection);
-
+        if (newRoad.id == 12364)
+        {
+            print("road: " + road.id);
+            print("otherroad: " + otherRoad.id);
+            foreach (Road.Neighbour n in otherRoad.next) {
+                print("othernext: " + n.r.id);
+                foreach (Road.Neighbour np in n.r.prev)
+                {
+                    print("othernextprev: " + np.r.id);
+                }
+                foreach (Road.Neighbour np in n.r.next)
+                {
+                    print("othernextnext: " + np.r.id);
+                }
+            }
+        }
         // set up links between roads
         newRoad.next.AddRange(otherRoad.next);
         newRoad.Parent = otherRoad;
@@ -238,8 +260,27 @@ public class LocalConstraints : MonoBehaviour {
         road.next.Add(new Road.Neighbour(otherRoad, false));
         foreach (Road.Neighbour n in otherRoad.next)
         {
-            n.r.RemoveNeighbour(otherRoad);
-            n.r.prev.Add(new Road.Neighbour(newRoad, true));
+            n.r.ReplaceNeighbour(otherRoad, newRoad);
+            //n.r.RemoveNeighbour(otherRoad);
+            //n.r.prev.Add(new Road.Neighbour(newRoad, true));
+        }
+
+        if (newRoad.id == 12364)
+        {
+            print("road: " + road.id);
+            print("otherroad: " + otherRoad.id);
+            foreach (Road.Neighbour n in otherRoad.next)
+            {
+                print("othernext: " + n.r.id);
+                foreach (Road.Neighbour np in n.r.prev)
+                {
+                    print("othernextprev: " + np.r.id);
+                }
+                foreach (Road.Neighbour np in n.r.next)
+                {
+                    print("othernextnext: " + np.r.id);
+                }
+            }
         }
 
         otherRoad.next.Clear();
@@ -249,6 +290,7 @@ public class LocalConstraints : MonoBehaviour {
         j.outgoing.Add(newRoad);
         j.incoming.Add(otherRoad);
         map.AddRoad(newRoad);
+
 
     }
 
@@ -317,6 +359,7 @@ public class LocalConstraints : MonoBehaviour {
 
     Vector3 DoRoadsIntersect(Road a, Road b, out bool found)
     {
+
         Vector2 p = GetIntersectionPointCoordinates(
             new Vector2(a.start.x, a.start.z),
             new Vector2(a.end.x, a.end.z),
@@ -324,7 +367,7 @@ public class LocalConstraints : MonoBehaviour {
             new Vector2(b.end.x, b.end.z),
             out found
             );
-        if (a.Bounds.Contains(p) && b.Bounds.Contains(p))
+        if (found && a.Bounds.Contains(p) && b.Bounds.Contains(p))
         {
             return new Vector3(p.x, 0, p.y);
         } else
@@ -340,7 +383,6 @@ public class LocalConstraints : MonoBehaviour {
 
         if (tmp == 0)
         {
-            // No solution!
             found = false;
             return Vector2.zero;
         }

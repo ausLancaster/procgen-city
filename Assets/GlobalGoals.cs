@@ -150,6 +150,26 @@ public class GlobalGoals : MonoBehaviour {
             }
         }
 
+        foreach (Road r in newRoads)
+        {
+            if (r.id == 4366)
+            {
+                print(prevSegment.id);
+                foreach (Road r0 in newRoads)
+                {
+                    print(r0.id);
+                    foreach (Road.Neighbour n in r0.next)
+                    {
+                        print("next: " + n.r.id);
+                    }
+                    foreach (Road.Neighbour n in r0.prev)
+                    {
+                        print("prev: " + n.r.id);
+                    }
+                }
+            }
+        } //delete this 
+
         return newRoads;
     }
 

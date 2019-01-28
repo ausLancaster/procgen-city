@@ -15,6 +15,7 @@ public static class CityConfig {
      * white: edge of map
      * */
     public const bool SHOW_JUNCTIONS = true;
+    public const bool SHOW_FAILED_JUNCTIONS = false; // angle too small
 
 
     // road generation

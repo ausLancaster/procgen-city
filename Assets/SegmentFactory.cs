@@ -9,7 +9,7 @@ public class SegmentFactory : MonoBehaviour {
     Junction junctionPrefab;
 
     int numberOfRoads = 0;
-    int[] nums = new int[] {9276, 9305, 10781 };
+    int[] nums = new int[] { 12364 };
 
 
 private void Start()
@@ -42,7 +42,7 @@ private void Start()
         {
             if (numberOfRoads == i)
             {
-                print(i);
+                print(i); // delete this
             }
         }
         numberOfRoads++;

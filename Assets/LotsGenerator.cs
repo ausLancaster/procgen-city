@@ -15,8 +15,15 @@ public class LotsGenerator : MonoBehaviour {
     {
         foreach (Road r in allRoads)
         {
-            if (r.id == 9123 || true)
+            if (r.id == 5087 || true)
             {
+                if (r.id == 4251)
+                {
+                    //printDebug = true;
+                } else
+                {
+                    printDebug = false;
+                }
                 if (printDebug) print("BEGINFORWARD");
                 List<Vector3> corners = new List<Vector3>();
                 if (SearchForLot(r, r, r, true, corners, false))
@@ -25,6 +32,7 @@ public class LotsGenerator : MonoBehaviour {
                     lot.Initialize(corners);
                     if (printDebug) print("found");
                 }
+                corners = new List<Vector3>();
                 if (printDebug) print("BEGINBACKWARD");
                 if (SearchForLot(r, r, r, false, corners, false))
                 {
@@ -50,11 +58,16 @@ public class LotsGenerator : MonoBehaviour {
         }
         if (corners.Count >= 20) return false;
 
-        // dead end: failed search
-        if (current.next.Count == 0) return false;
-
         // choose the neighbour with the smallest angle
         List<Road.Neighbour> neighbours = forward ? current.next : current.prev;
+
+        // dead end: failed search
+        if (neighbours.Count == 0)
+        {
+            if (printDebug) print("dead end");
+            return false;
+        }
+
         string str = forward ? "next" : "prev";
         str += ": ";
         float maxAngle = Mathf.NegativeInfinity;
@@ -94,8 +107,17 @@ public class LotsGenerator : MonoBehaviour {
                 print(neighbour.r.id);
             current.SetColor(Color.green);
         }*/
-        if (next.travelled) return false;
+        if (next.travelled)
+        {
+            if (printDebug) print(next.r.id + "travelled");
+            return false;
+        }
 
+        // delete this
+        if (next.r.id == 12364 && current.id == 5087 && original.id != 5087)
+        {
+            print("Stolen by " + original.id);
+        }
         // mark link as travelled for future searches
         next.travelled = true;
 
