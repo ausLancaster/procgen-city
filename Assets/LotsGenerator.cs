@@ -15,7 +15,7 @@ public class LotsGenerator : MonoBehaviour {
     {
         foreach (Road r in allRoads)
         {
-            if (r.id == 11420 || true)
+            if (r.id == 9123 || true)
             {
                 if (printDebug) print("BEGINFORWARD");
                 List<Vector3> corners = new List<Vector3>();
@@ -100,7 +100,7 @@ public class LotsGenerator : MonoBehaviour {
         next.travelled = true;
 
         // angle is convex: failed search (but continue)
-        if (maxAngle < 180) convex = true;
+        if (maxAngle < 179.9) convex = true;
 
         // if next is same as original, we have successfully completed a loop
         if (next.r.id == original.id)

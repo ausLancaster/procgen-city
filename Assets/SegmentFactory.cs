@@ -9,9 +9,10 @@ public class SegmentFactory : MonoBehaviour {
     Junction junctionPrefab;
 
     int numberOfRoads = 0;
+    int[] nums = new int[] {9276, 9305, 10781 };
 
 
-    private void Start()
+private void Start()
     {
     }
 
@@ -37,6 +38,13 @@ public class SegmentFactory : MonoBehaviour {
     {
         Road road = Instantiate(roadPrefab);
         road.Initialize(numberOfRoads, start, end, length, t, type);
+        foreach (int i in nums)
+        {
+            if (numberOfRoads == i)
+            {
+                print(i);
+            }
+        }
         numberOfRoads++;
 
 

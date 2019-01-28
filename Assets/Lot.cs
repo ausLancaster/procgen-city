@@ -8,6 +8,8 @@ public class Lot : MonoBehaviour {
 
     public void Initialize(List<Vector3> corners)
     {
+        GetComponent<MeshRenderer>().material.color = Random.value * new Color(1f, 1f, 1f);
+
         this.corners = corners;
         MeshBuilder mb = Polygon.Mesh(corners);
         GetComponent<MeshFilter>().mesh = mb.Generate();

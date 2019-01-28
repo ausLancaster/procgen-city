@@ -5,6 +5,9 @@ public class LocalConstraints : MonoBehaviour {
 
     SegmentFactory segFactory;
 
+    int[] nums = new int[] {};  // delete this
+    bool stop = false; // delete this
+
     private void Initialize()
     {
         segFactory = GetComponent<SegmentFactory>();
@@ -12,6 +15,15 @@ public class LocalConstraints : MonoBehaviour {
 
     public bool Check(Road road, RoadMap roadMap)
     {
+        if (stop) return false;
+        foreach (int i in nums)
+        {
+            if (road.id == i)
+            {
+                print(road.id);
+            }
+        }
+
         if (segFactory == null) Initialize();
 
         int actionPriority = 0;
@@ -148,6 +160,7 @@ public class LocalConstraints : MonoBehaviour {
         j.SetColor(Color.magenta);
         road.attachedSegments.Add(j);
         road.severed = true;
+        otherRoad.severed = true;
         road.MoveEnd(intersection);
 
         SetUpNewIntersection(road, otherRoad, intersection, j, roadMap);
@@ -188,6 +201,7 @@ public class LocalConstraints : MonoBehaviour {
         road.attachedSegments.Add(j);
         road.MoveEnd(intersection);
         road.severed = true;
+        otherRoad.severed = true;
 
         SetUpNewIntersection(road, otherRoad, intersection, j, roadMap);
     }
@@ -202,6 +216,7 @@ public class LocalConstraints : MonoBehaviour {
 
     void SetUpNewIntersection(Road road, Road otherRoad, Vector3 intersection, Junction j, RoadMap map)
     {
+
         // split road that is being intersected
         Road newRoad = segFactory.CreateRoad(intersection, otherRoad.end, otherRoad.t, otherRoad.type);
         otherRoad.MoveEnd(intersection);
@@ -225,6 +240,7 @@ public class LocalConstraints : MonoBehaviour {
         j.outgoing.Add(newRoad);
         j.incoming.Add(otherRoad);
         map.AddRoad(newRoad);
+
     }
 
     Vector3 InterestsMapBoundary(Road r, out bool intersects)
@@ -299,7 +315,7 @@ public class LocalConstraints : MonoBehaviour {
             new Vector2(b.end.x, b.end.z),
             out found
             );
-        if (a.Bounds.Contains(p))
+        if (a.Bounds.Contains(p) && b.Bounds.Contains(p))
         {
             return new Vector3(p.x, 0, p.y);
         } else
