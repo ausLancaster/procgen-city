@@ -57,6 +57,20 @@ public class Game : MonoBehaviour {
             {
                 // check local constraints
                 bool accepted = localConstraints.Check(nextRoad, map);
+                if (nextRoad.id == 12995)
+                {
+                    print("accepted? " + accepted);
+                    print("prev");
+                    foreach (Road.Neighbour n in nextRoad.prev)
+                    {
+                        print(n.r.id);
+                    }
+                    print("next");
+                    foreach (Road.Neighbour n in nextRoad.next)
+                    {
+                        print(n.r.id);
+                    }
+                }
                 if (accepted)
                 {
                     // set up branch links
@@ -76,12 +90,12 @@ public class Game : MonoBehaviour {
                     }
                 } else
                 {
-                    Destroy(nextRoad.gameObject);
+                    DestroyImmediate(nextRoad.gameObject);
                 }
             } else
             {
                 // delete leftover roads after maximum has been exceeded
-                Destroy(nextRoad.gameObject);
+                DestroyImmediate(nextRoad.gameObject);
             }
         }
         print("Created " + roadCount + " roads!");

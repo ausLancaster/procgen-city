@@ -15,31 +15,28 @@ public class LotsGenerator : MonoBehaviour {
     {
         foreach (Road r in allRoads)
         {
-            if (r.id == 5087 || true)
+            if (r.id == 12599)
             {
-                if (r.id == 4251)
-                {
-                    //printDebug = true;
-                } else
-                {
-                    printDebug = false;
-                }
-                if (printDebug) print("BEGINFORWARD");
-                List<Vector3> corners = new List<Vector3>();
-                if (SearchForLot(r, r, r, true, corners, false))
-                {
-                    Lot lot = Instantiate(lotPrefab);
-                    lot.Initialize(corners);
-                    if (printDebug) print("found");
-                }
-                corners = new List<Vector3>();
-                if (printDebug) print("BEGINBACKWARD");
-                if (SearchForLot(r, r, r, false, corners, false))
-                {
-                    Lot lot = Instantiate(lotPrefab);
-                    lot.Initialize(corners);
-                    if (printDebug) print("found");
-                }
+                printDebug = false;
+            } else
+            {
+                printDebug = false;
+            }
+            if (printDebug) print("BEGINFORWARD");
+            List<Vector3> corners = new List<Vector3>();
+            if (SearchForLot(r, r, r, true, corners, false))
+            {
+                Lot lot = Instantiate(lotPrefab);
+                lot.Initialize(corners);
+                if (printDebug) print("found");
+            }
+            corners = new List<Vector3>();
+            if (printDebug) print("BEGINBACKWARD");
+            if (SearchForLot(r, r, r, false, corners, false))
+            {
+                Lot lot = Instantiate(lotPrefab);
+                lot.Initialize(corners);
+                if (printDebug) print("found");
             }
 
         }
@@ -114,15 +111,19 @@ public class LotsGenerator : MonoBehaviour {
         }
 
         // delete this
-        if (next.r.id == 12364 && current.id == 5087 && original.id != 5087)
+        if (next.r.id == 12727 && current.id == 12600 && original.id != 12600)
         {
-            print("Stolen by " + original.id);
+            //print("Stolen by " + original.id);
         }
         // mark link as travelled for future searches
         next.travelled = true;
 
         // angle is convex: failed search (but continue)
-        if (maxAngle < 179.9) convex = true;
+        if (maxAngle < 179.9)
+        {
+            if (printDebug) print("CONVEX");
+            convex = true;
+        }
 
         // if next is same as original, we have successfully completed a loop
         if (next.r.id == original.id)

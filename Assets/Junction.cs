@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Junction : MonoBehaviour, Segment {
 
-    public List<Road> incoming {get; set;}
-    public List<Road> outgoing { get; set; }
+    public List<Road> incoming { get; private set;}
+    public List<Road> outgoing { get; private set; }
     public bool added { get; set; }
 
     private void Awake()
@@ -34,5 +34,24 @@ public class Junction : MonoBehaviour, Segment {
     public void SetColor(Color col)
     {
         GetComponent<MeshRenderer>().material.color = col;
+    }
+
+    public void AddIncoming(Road r)
+    {
+        incoming.Add(r);
+        r.intersections.Add(this);
+    }
+
+
+    public void AddOutgoing(Road r)
+    {
+        outgoing.Add(r);
+        r.intersections.Add(this);
+    }
+
+    public void RemoveRoad(Road r)
+    {
+        incoming.Remove(r);
+        outgoing.Remove(r);
     }
 }

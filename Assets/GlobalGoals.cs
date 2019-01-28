@@ -183,15 +183,16 @@ public class GlobalGoals : MonoBehaviour {
             t,
             type
             );
+        if (branchRoad.id == 12995) print("prevseg: " + prevSegment.id);
         if (j == null)
         {
             j = segFactory.CreateJunction(prevSegment.end, Quaternion.identity);
             straight.attachedSegments.Add(j);
-            j.outgoing.Add(straight);
+            j.AddOutgoing(straight);
         }
         branchRoad.attachedSegments.Add(j);
-        j.incoming.Add(prevSegment);
-        j.outgoing.Add(branchRoad);
+        j.AddIncoming(prevSegment);
+        j.AddOutgoing(branchRoad);
 
         return branchRoad;
     }

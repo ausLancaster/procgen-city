@@ -14,6 +14,7 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
 
     public event EventHandler BoundsChanged;
     public List<Junction> attachedSegments { get; private set; }
+    public List<Junction> intersections { get; set; }
     public List<Neighbour> prev { get; private set; }
     public List<Neighbour> next { get; private set; }
     Rect bounds;
@@ -62,6 +63,7 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
         prev = new List<Neighbour>();
         next = new List<Neighbour>();
         attachedSegments = new List<Junction>();
+        intersections = new List<Junction>();
         severed = false;
     }
 
@@ -98,12 +100,17 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
         }
         foreach (Junction s in attachedSegments)
         {
-            if (s != null) Destroy(s.gameObject);
+            if (s != null) DestroyImmediate(s.gameObject);
+        }
+        foreach (Junction j in intersections)
+        {
+            j.RemoveRoad(this);
         }
     }
 
     public void RemoveNeighbour(Road r)
     {
+
         foreach (Neighbour n in next)
         {
             if (n.r.id == r.id)

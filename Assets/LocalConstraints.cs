@@ -207,7 +207,7 @@ public class LocalConstraints : MonoBehaviour {
             r.next.Add(new Road.Neighbour(road, false));
             road.next.Add(new Road.Neighbour(r, false));
         }
-        otherJunction.incoming.Add(road);
+        otherJunction.AddIncoming(road);
     }
 
     void SnapToNewJunction(Road road, Road otherRoad, Vector3 intersection, RoadMap roadMap)
@@ -236,7 +236,7 @@ public class LocalConstraints : MonoBehaviour {
         // split road that is being intersected
         Road newRoad = segFactory.CreateRoad(intersection, otherRoad.end, otherRoad.t, otherRoad.type);
         otherRoad.MoveEnd(intersection);
-        if (newRoad.id == 12364)
+        /*if (newRoad.id == 12364)
         {
             print("road: " + road.id);
             print("otherroad: " + otherRoad.id);
@@ -251,7 +251,7 @@ public class LocalConstraints : MonoBehaviour {
                     print("othernextnext: " + np.r.id);
                 }
             }
-        }
+        }*/
         // set up links between roads
         newRoad.next.AddRange(otherRoad.next);
         newRoad.Parent = otherRoad;
@@ -265,7 +265,7 @@ public class LocalConstraints : MonoBehaviour {
             //n.r.prev.Add(new Road.Neighbour(newRoad, true));
         }
 
-        if (newRoad.id == 12364)
+        /*if (newRoad.id == 12364)
         {
             print("road: " + road.id);
             print("otherroad: " + otherRoad.id);
@@ -281,14 +281,14 @@ public class LocalConstraints : MonoBehaviour {
                     print("othernextnext: " + np.r.id);
                 }
             }
-        }
+        }*/
 
         otherRoad.next.Clear();
         otherRoad.next.Add(new Road.Neighbour(newRoad, true));
         otherRoad.next.Add(new Road.Neighbour(road, false));
-        j.incoming.Add(road);
-        j.outgoing.Add(newRoad);
-        j.incoming.Add(otherRoad);
+        j.AddIncoming(road);
+        j.AddOutgoing(newRoad);
+        j.AddIncoming(otherRoad);
         map.AddRoad(newRoad);
 
 
