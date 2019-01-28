@@ -100,11 +100,21 @@ public class LocalConstraints : MonoBehaviour {
                     {
                         actionPriority = 1;
 
-                        if (finalNewIntersection == Vector3.zero ||
-                            Vector3.Distance(road.start, newIntersection) < Vector3.Distance(road.start, finalNewIntersection))
+                        if (ExceedsMinimumIntersectionAngle(road, otherRoad))
                         {
-                            finalNewIntersection = newIntersection;
-                            finalOtherRoad = otherRoad;
+                            if (finalNewIntersection == Vector3.zero ||
+                                Vector3.Distance(road.start, newIntersection) < Vector3.Distance(road.start, finalNewIntersection))
+                            {
+                                finalNewIntersection = newIntersection;
+                                finalOtherRoad = otherRoad;
+                            }
+                        }
+                        else
+                        {
+                            Junction j = segFactory.CreateJunction(road.start, Quaternion.identity);
+                            j.SetColor(Color.red);
+
+                            return false;
                         }
                     }
                 }
@@ -208,10 +218,9 @@ public class LocalConstraints : MonoBehaviour {
 
     bool ExceedsMinimumIntersectionAngle(Road a, Road b)
     {
-        float anglediff = Quaternion.Angle(a.transform.localRotation, b.transform.localRotation);
-        anglediff = Mathf.Abs(anglediff);
-        float reverseAnglediff = Mathf.Abs(anglediff + 180);
-        return anglediff > CityConfig.MIN_INTERSECTION_ANGLE && reverseAnglediff > CityConfig.MIN_INTERSECTION_ANGLE;
+        float angleDiff = Mathf.Abs(Mathf.DeltaAngle(a.transform.localRotation.eulerAngles.y, b.transform.localRotation.eulerAngles.y));
+        float reverseAngleDiff = Mathf.Abs(Mathf.DeltaAngle(a.transform.localRotation.eulerAngles.y + 180, b.transform.localRotation.eulerAngles.y));
+        return angleDiff > CityConfig.MIN_INTERSECTION_ANGLE && reverseAngleDiff > CityConfig.MIN_INTERSECTION_ANGLE;
     }
 
     void SetUpNewIntersection(Road road, Road otherRoad, Vector3 intersection, Junction j, RoadMap map)

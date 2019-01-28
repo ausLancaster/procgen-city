@@ -40,7 +40,7 @@ public static class CityConfig {
     public const float QUADTREE_MIN_SIZE = 32f;
     public const float MIN_INTERSECTION_ANGLE = 30f;
     public const float ROAD_SNAP_DISTANCE = 20f; //20f;
-    public const float JUNCTION_SIZE = 4f;
+    public const float JUNCTION_SIZE = 2f;
 
     public static float RandomStraightAngle()
     {
