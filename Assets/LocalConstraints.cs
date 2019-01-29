@@ -236,22 +236,7 @@ public class LocalConstraints : MonoBehaviour {
         // split road that is being intersected
         Road newRoad = segFactory.CreateRoad(intersection, otherRoad.end, otherRoad.t, otherRoad.type);
         otherRoad.MoveEnd(intersection);
-        /*if (newRoad.id == 12364)
-        {
-            print("road: " + road.id);
-            print("otherroad: " + otherRoad.id);
-            foreach (Road.Neighbour n in otherRoad.next) {
-                print("othernext: " + n.r.id);
-                foreach (Road.Neighbour np in n.r.prev)
-                {
-                    print("othernextprev: " + np.r.id);
-                }
-                foreach (Road.Neighbour np in n.r.next)
-                {
-                    print("othernextnext: " + np.r.id);
-                }
-            }
-        }*/
+
         // set up links between roads
         newRoad.next.AddRange(otherRoad.next);
         newRoad.Parent = otherRoad;
@@ -264,24 +249,6 @@ public class LocalConstraints : MonoBehaviour {
             //n.r.RemoveNeighbour(otherRoad);
             //n.r.prev.Add(new Road.Neighbour(newRoad, true));
         }
-
-        /*if (newRoad.id == 12364)
-        {
-            print("road: " + road.id);
-            print("otherroad: " + otherRoad.id);
-            foreach (Road.Neighbour n in otherRoad.next)
-            {
-                print("othernext: " + n.r.id);
-                foreach (Road.Neighbour np in n.r.prev)
-                {
-                    print("othernextprev: " + np.r.id);
-                }
-                foreach (Road.Neighbour np in n.r.next)
-                {
-                    print("othernextnext: " + np.r.id);
-                }
-            }
-        }*/
 
         otherRoad.next.Clear();
         otherRoad.next.Add(new Road.Neighbour(newRoad, true));

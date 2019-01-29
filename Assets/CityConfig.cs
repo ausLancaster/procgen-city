@@ -14,7 +14,7 @@ public static class CityConfig {
      * red: less than minimum angle
      * white: edge of map
      * */
-    public const bool SHOW_JUNCTIONS = true;
+    public const bool SHOW_JUNCTIONS = false;
     public const bool SHOW_FAILED_JUNCTIONS = false; // angle too small
 
 
@@ -31,7 +31,7 @@ public static class CityConfig {
     public const float HIGHWAY_SEGMENT_WIDTH = 4f; //8f
     public const float MAX_STRAIGHT_ANGLE = 15f; // 30f
     public const float MAX_BRANCH_ANGLE = 7.5f; //15f
-    public const float HIGHWAY_BRANCH_POPULATION_THRESHOLD = 0.3f;
+    public const float HIGHWAY_BRANCH_POPULATION_THRESHOLD = 0.5f;
     public const float STREET_BRANCH_POPULATION_THRESHOLD = 0.6f;
     public const float HIGHWAY_BRANCH_PROBABILITY = 0.05f;
     public const float STREET_BRANCH_PROBABILITY = 0.4f;
@@ -59,4 +59,7 @@ public static class CityConfig {
     }
 
     // building generation
+    public const float BUILDING_HEIGHT_MAX = 1000f;
+    public const float BUILDING_HEIGHT_VARIANCE = 200f;
+    public const float BUILDING_UNDEGROUND_DEPTH = 1000f;
 }

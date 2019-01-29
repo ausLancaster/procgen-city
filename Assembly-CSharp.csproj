@@ -71,6 +71,7 @@
     <Compile Include="Assets\LotsGenerator.cs" />
     <Compile Include="Assets\MeshBuilder.cs" />
     <Compile Include="Assets\Polygon.cs" />
+    <Compile Include="Assets\PolygonPrism.cs" />
     <Compile Include="Assets\PopMapVisualisation.cs" />
     <Compile Include="Assets\PriorityQueue.cs" />
     <Compile Include="Assets\QuadTree.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Assets\Size.cs" />
     <Compile Include="Assets\TestAngle.cs" />
     <Compile Include="Assets\TestPolygon.cs" />
+    <None Include="Assets\InstancedColors.shader" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>W:/Unity Projects/ProcgenCity/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>

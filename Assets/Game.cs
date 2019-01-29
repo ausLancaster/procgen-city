@@ -57,20 +57,6 @@ public class Game : MonoBehaviour {
             {
                 // check local constraints
                 bool accepted = localConstraints.Check(nextRoad, map);
-                if (nextRoad.id == 12995)
-                {
-                    print("accepted? " + accepted);
-                    print("prev");
-                    foreach (Road.Neighbour n in nextRoad.prev)
-                    {
-                        print(n.r.id);
-                    }
-                    print("next");
-                    foreach (Road.Neighbour n in nextRoad.next)
-                    {
-                        print(n.r.id);
-                    }
-                }
                 if (accepted)
                 {
                     // set up branch links
@@ -101,5 +87,9 @@ public class Game : MonoBehaviour {
         print("Created " + roadCount + " roads!");
 
         lotsGenerator.Generate(map.allRoads);
+        foreach (Road r in map.allRoads)
+        {
+            Destroy(r.gameObject);
+        }
     }
 }

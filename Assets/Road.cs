@@ -100,11 +100,14 @@ public class Road : MonoBehaviour, IComparable<Road>, Segment
         }
         foreach (Junction s in attachedSegments)
         {
-            if (s != null) DestroyImmediate(s.gameObject);
+            if (s != null) Destroy(s.gameObject);
         }
         foreach (Junction j in intersections)
         {
-            j.RemoveRoad(this);
+            if (j != null)
+            {
+                j.RemoveRoad(this);
+            }
         }
     }
 

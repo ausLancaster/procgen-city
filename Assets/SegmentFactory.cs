@@ -42,7 +42,7 @@ private void Start()
         {
             if (numberOfRoads == i)
             {
-                print(i); // delete this
+                //print(i); // delete this
             }
         }
         numberOfRoads++;

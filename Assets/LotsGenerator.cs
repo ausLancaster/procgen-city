@@ -7,15 +7,18 @@ public class LotsGenerator : MonoBehaviour {
 
     [SerializeField]
     Lot lotPrefab;
+    [SerializeField]
+    Material sharedMaterial;
+    Lot lot;
 
     bool printDebug = false;
 
-
     public List<Lot> Generate(List<Road> allRoads)
     {
+
         foreach (Road r in allRoads)
         {
-            if (r.id == 12599)
+            if (r.id == 2756)
             {
                 printDebug = false;
             } else
@@ -26,21 +29,35 @@ public class LotsGenerator : MonoBehaviour {
             List<Vector3> corners = new List<Vector3>();
             if (SearchForLot(r, r, r, true, corners, false))
             {
-                Lot lot = Instantiate(lotPrefab);
-                lot.Initialize(corners);
-                if (printDebug) print("found");
+                CreateLot(corners);
             }
             corners = new List<Vector3>();
             if (printDebug) print("BEGINBACKWARD");
             if (SearchForLot(r, r, r, false, corners, false))
             {
-                Lot lot = Instantiate(lotPrefab);
-                lot.Initialize(corners);
-                if (printDebug) print("found");
+                CreateLot(corners);
             }
 
         }
         return new List<Lot>();
+    }
+
+    public void CreateLot(List<Vector3> corners)
+    {
+        for (int i=0; i<corners.Count; i++)
+        {
+            corners[i] -= Vector3.up * CityConfig.BUILDING_UNDEGROUND_DEPTH;
+        }
+        Lot lot = Instantiate(lotPrefab);
+        float height = Heatmap.Value(corners[0]);
+        height -= CityConfig.STREET_BRANCH_POPULATION_THRESHOLD;
+        if (height < 0) height = 0;
+        height /= (1f - CityConfig.STREET_BRANCH_POPULATION_THRESHOLD);
+        height *= CityConfig.BUILDING_HEIGHT_MAX;
+        height += CityConfig.BUILDING_HEIGHT_VARIANCE * (UnityEngine.Random.value - .5f);
+        height += CityConfig.BUILDING_UNDEGROUND_DEPTH;
+        lot.Initialize(corners, height, sharedMaterial);
+        if (printDebug) print("found");
     }
 
     bool SearchForLot(Road original, Road current, Road prev, bool forward, List<Vector3> corners, bool convex)
@@ -111,15 +128,15 @@ public class LotsGenerator : MonoBehaviour {
         }
 
         // delete this
-        if (next.r.id == 12727 && current.id == 12600 && original.id != 12600)
+        if (next.r.id == 9810 && current.id == 9610 && original.id != 9610)
         {
-            //print("Stolen by " + original.id);
+            if (printDebug) print("Stolen by " + original.id);
         }
         // mark link as travelled for future searches
         next.travelled = true;
 
         // angle is convex: failed search (but continue)
-        if (maxAngle < 179.9)
+        if (maxAngle < 179)
         {
             if (printDebug) print("CONVEX");
             convex = true;
