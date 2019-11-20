@@ -27,8 +27,8 @@ public static class CityConfig {
     public const int MAX_ROADS = 7500;
     public const float STREET_SEGMENT_LENGTH = 30f; //30f
     public const float HIGHWAY_SEGMENT_LENGTH = 40f; //40f
-    public const float STREET_SEGMENT_WIDTH = 2f; //4f
-    public const float HIGHWAY_SEGMENT_WIDTH = 4f; //8f
+    public const float STREET_SEGMENT_WIDTH = 6f; //4f
+    public const float HIGHWAY_SEGMENT_WIDTH = 6f; //8f
     public const float MAX_STRAIGHT_ANGLE = 15f; // 30f
     public const float MAX_BRANCH_ANGLE = 7.5f; //15f
     public const float HIGHWAY_BRANCH_POPULATION_THRESHOLD = 0.5f;
@@ -62,4 +62,5 @@ public static class CityConfig {
     public const float BUILDING_HEIGHT_MAX = 1000f;
     public const float BUILDING_HEIGHT_VARIANCE = 200f;
     public const float BUILDING_UNDEGROUND_DEPTH = 1000f;
+    public const float CORNER_TO_BUILDING_GAP = 6f;
 }

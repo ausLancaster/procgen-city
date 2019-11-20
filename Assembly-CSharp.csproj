@@ -83,6 +83,7 @@
     <Compile Include="Assets\TestAngle.cs" />
     <Compile Include="Assets\TestPolygon.cs" />
     <None Include="Assets\InstancedColors.shader" />
+    <None Include="Assets\SkyboxShader.shader" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>W:/Unity Projects/ProcgenCity/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>

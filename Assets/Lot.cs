@@ -26,6 +26,23 @@ public class Lot : MonoBehaviour {
         meshRenderer.SetPropertyBlock(sharedPropertyBlock);
 
         this.corners = corners;
+
+        // find centre by averaging all corners
+        Vector3 centre = Vector3.zero;
+        foreach (Vector3 c in corners)
+        {
+            centre += c;
+        }
+        centre *= (1f / corners.Count);
+
+        // shift corners toward centre to make way for road
+        for (int i=0; i<corners.Count; i++)
+        {
+            Vector3 direction = centre - corners[i];
+            direction = direction.normalized;
+            corners[i] += CityConfig.CORNER_TO_BUILDING_GAP * direction;
+        }
+
         MeshBuilder mb = PolygonPrism.Mesh(corners, height);
         GetComponent<MeshFilter>().mesh = mb.Generate();
     }
